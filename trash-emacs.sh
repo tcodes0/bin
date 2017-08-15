@@ -23,7 +23,7 @@ work () {
 	echo $command"ed $count emacs files in $(pwd)"
     else
 	if [ "$verbose" == "true" ];then
-	    echo "no files found in $(pwd)"
+	    echo "no emacs files found in $(pwd)"
 	fi
     fi
 }
