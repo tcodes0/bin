@@ -4,7 +4,7 @@ if [ -f $external ];then
   source $external
 fi
 precho "Updating Brewfile..."
-echo
+# echo
 runc cd "$HOME/Desktop"
 #prevents an error from previous run's files
 if [ -f ./Brewfile ];then
@@ -17,10 +17,10 @@ NEW=./Brewfile
 if [ "$(diff --brief $NEW $OLD)" == "" ]; then
   #precho "...Brewfile unchanged, skipping it."
   trash $NEW
-  echo
+  # echo
 else
   runc mv $OLD $OLD-old
   runc trash $OLD-old
   runc mv $NEW $OLD
-  echo
+  # echo
 fi

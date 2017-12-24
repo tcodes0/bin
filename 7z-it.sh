@@ -5,4 +5,4 @@ if [ $# == "0" ]; then
     exit 1
 fi
 
-tar cf - "$1" | 7za a -si -mx=7 "$1".tar.7z
+tar cf - "$1" 1>/dev/null 2>1 | 7za a -si -mx=7 "$1".tar.7z 1>/dev/null

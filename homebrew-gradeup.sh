@@ -3,10 +3,20 @@ external=$HOME/.bash_functions
 if [ -f $external ];then
   source $external
 fi
-if [ "$1" == "--dont-ask" -o "$1" == "-f" ];then
-  brew upgrade
+work(){
+  precho "Upgrading all homebrew apps..."
+  # echo
+  brew upgrade 1>/dev/null
+  precho "Scrubbing homebrew's cache..."
+  # echo
+  brew cleanup -s --prune=31 1>/dev/null
+}
+case "$1" in
+  --dont-ask | -f)
+  work
   exit 0
-fi
+  ;;
+esac
 #confirm upgrade
 precho "Upgrade all homebrew apps now? (y/n)"
 precho "...defaulting to yes in 10s"
@@ -15,6 +25,6 @@ if [ "$?" != 0 ]; then
   exit 1
 fi
 if [ "$REPLY" == "y" ] || [ "$REPLY" == "yes" ] || [ "$REPLY" == "Y" ] || [ "$REPLY" == "YES" ]; then
-  brew upgrade
+  work
+  exit 0
 fi
-exit 0

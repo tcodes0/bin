@@ -38,14 +38,14 @@ run-command-with-lock () {
   scheduler-unlock
 }
 #======================================== vars
-#    weekdays	num	bkp?
-#sunday		0 	no
-#mon		1 	no
-#tues		2 	yes
-#wed		3 	no
-#thurs		4 	yes
-#fri		5 	no
-#saturday	6 	yes
+#weekdays	num	bkp?
+#sunday   0 	no
+#mon      1 	no
+#tues     2 	yes
+#wed      3 	no
+#thurs    4 	yes
+#fri      5 	no
+#saturday 6 	yes
 todays_weekday=$(date +"%w")
 record_file=~/.scheduler-last-run-date
 lock_file=~/.scheduler-lock

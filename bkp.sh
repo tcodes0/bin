@@ -1,5 +1,4 @@
 #! /bin/bash
-#################### notes to self
 ##-----------------------  Input  ----------------------##
 declare LOGPATH="$HOME/Desktop/bkp-log.txt"
 declare ADDLOG="--log-file $LOGPATH"
@@ -53,39 +52,60 @@ ask-first() {
     exit 1
   fi
 }
+help-text(){
+  echo "bkp.sh -- personal backup script"
+  echo ""
+  echo "-p, --print: prints all files and folders with their bkp location"
+  echo "-h, --help : see this message"
+}
 ######-----------------  Main -----------------######
-if [ "$1" == "--print" ] || [ "$1" == "-p" ]; then
-  print
-  exit 0
+if [[ "$#" != 0 ]]; then
+  case "$1" in
+    --print | -p)
+    print
+    exit 0
+    ;;
+    --skip-main)
+    skip="main"
+    ;;
+    *)
+    help-text
+    exit 1
+    ;;
+  esac
 fi
 #-- Test for backup drive plugged in
 if ! [ -d "$BKPDIR" ]; then
   precho -c "Seagate is not plugged in! Aborting"
   exit 1
 fi
-#-- Rsync
-precho "Running main rsync backup... "
-echo    								                                            >> "$LOGPATH"
-echo "#################### STARTING NEW RUN ####################" 	>> "$LOGPATH"
-echo    								                                            >> "$LOGPATH"
-#cleaning up emacs bkps and other files before sync
-trash-emacs.sh -v							                                      >> "$LOGPATH"
-for file in "${!PATHS[@]}"; do
-  for bkp in "${PATHS[$file]}"; do
-    echo -e "\n-> $(date +"%b %d %T ")$file    to     $bkp"		     >> "$LOGPATH"
-    if ! [ -d "$bkp" ] && ! [ -f "$bkp" ]; then
-      echo "-> full bkp path doesn't seem to exist!" 		           >> "$LOGPATH"
-      echo "-> attempting to make it" 				                     >> "$LOGPATH"
-      mkdir -p "$bkp"
-    fi
-    $RSYNC $ADDLOG "$file" "$bkp"
+if [[ $skip != "main" ]]; then
+  #-- Rsync
+  precho "Copying path list to backup locations... "
+  echo    								                                            >> "$LOGPATH"
+  echo "#################### STARTING NEW RUN ####################" 	>> "$LOGPATH"
+  echo    								                                            >> "$LOGPATH"
+  #cleaning up emacs bkps and other files before sync
+  trash-emacs.sh -v							                                      >> "$LOGPATH"
+  # set -x
+  for file in "${!PATHS[@]}"; do
+    for bkp in "${PATHS[$file]}"; do
+      echo -e "\n-> $(date +"%b %d %T ")$file    to     $bkp"		     >> "$LOGPATH"
+      if ! [ -d "$bkp" ] && ! [ -f "$bkp" ]; then
+        echo "-> full bkp path doesn't seem to exist!" 		           >> "$LOGPATH"
+        echo "-> attempting to make it" 				                     >> "$LOGPATH"
+        mkdir -p "$bkp"
+      fi
+      $RSYNC $ADDLOG "$file" "$bkp" 1>/dev/null
+    done
   done
-done
-echo
-echo "_________________________________________________________"	>> "$LOGPATH"
-echo    								                                          >> "$LOGPATH"
+  # set +x
+  # echo
+  echo "_________________________________________________________"	>> "$LOGPATH"
+  echo    								                                          >> "$LOGPATH"
+fi
 #-- Applist
-precho "Rsyncing applist..."
+precho "Saving a list of all apps on /Applications..."
 echo "-> $(date +"%b %d %T ")Applist rsync started"			          >> "$LOGPATH"
 new_applist=./applist.txt
 old_applist=$BKPDIR/Bkp/_Mac/others/applist.txt
@@ -93,7 +113,7 @@ runc cd "$HOME/Desktop"
 runc ls /Applications/ > ./applist.txt
 $RSYNC $ADDLOG "$new_applist" "$old_applist"
 runc trash ./applist.txt
-echo
+# echo
 echo "_________________________________________________________"	>> "$LOGPATH"
 echo    								                                          >> "$LOGPATH"
 #-- Zip-move
@@ -115,7 +135,7 @@ for zippedfile in "${!ZIPLIST[@]}"; do
   done
   runc trash "${zippedfile}.tar.7z"
 done
-echo
+# echo
 echo "_________________________________________________________"	      >> "$LOGPATH"
 echo    								                                                >> "$LOGPATH"
 #-- Homebrew upgrade
@@ -125,7 +145,7 @@ fi
 #-- Mackup
 precho "Running Mackup..."
 runc mackup backup
-echo
+# echo
 #-- Brewfile
 if [ "$HOME/bin/brewfile-update.sh" ];then
   $HOME/bin/brewfile-update.sh
