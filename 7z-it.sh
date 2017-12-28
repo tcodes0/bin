@@ -1,4 +1,4 @@
-# ! /bin/bash
+#! /bin/bash
 if [ $# == "0" ]; then
     echo "7z-it.sh needs at least 1 arg"
     exit 1

@@ -1,3 +1,4 @@
+#! /bin/bash
 case "$1" in
   --help | -h)
     echo "$0: dump formating options to std out"

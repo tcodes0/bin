@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 external=$HOME/.bash_functions
 if [ -f $external ];then
   source $external
