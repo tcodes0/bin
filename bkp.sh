@@ -139,8 +139,8 @@ done
 echo "_________________________________________________________"	      >> "$LOGPATH"
 echo    								                                                >> "$LOGPATH"
 #-- Homebrew upgrade
-if [ -f "$HOME/bin/homebrew-gradeup.sh" ]; then
-  $HOME/bin/homebrew-gradeup.sh --dont-ask
+if [ -f "$HOME/bin/homebrew-upgrade.sh" ]; then
+  $HOME/bin/homebrew-upgrade.sh --dont-ask
 fi
 #-- Mackup
 precho "Running Mackup..."

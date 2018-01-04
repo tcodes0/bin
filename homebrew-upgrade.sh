@@ -7,9 +7,11 @@ work(){
   precho "Upgrading all homebrew apps..."
   # echo
   brew upgrade 1>/dev/null
+  brew cask upgrade 1>/dev/null
   precho "Scrubbing homebrew's cache..."
   # echo
   brew cleanup -s --prune=31 1>/dev/null
+  brew cask cleanup 1>/dev/null
 }
 case "$1" in
   --dont-ask | -f)
