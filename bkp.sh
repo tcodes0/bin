@@ -24,7 +24,7 @@ declare -A PATHS=(
 # [""]=""
 # [""]=""
 )
-##--------------------  Functions --------------------##
+##------------------  Dependencies -------------------##
 external=$HOME/.bash_functions
 if [ -f "$external" ]; then
   source "$external"
@@ -32,6 +32,7 @@ else
   echo "$external not found. Exiting..."
   exit 1
 fi
+##--------------------  Functions --------------------##
 print(){
   precho "Printing input..."
   for file in "${!PATHS[@]}"; do
@@ -79,6 +80,10 @@ if ! [ -d "$BKPDIR" ]; then
   precho -c "Seagate is not plugged in! Aborting"
   exit 1
 fi
+echoform 0 49 35
+precho --padding=-1 "💫 🖥 Running $(basename $0) 🖥 💫"
+echoform 0
+echo
 if [[ $skip != "main" ]]; then
   #-- Rsync
   precho "Copying path list to backup locations... "

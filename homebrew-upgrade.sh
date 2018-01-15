@@ -4,14 +4,16 @@ if [ -f $external ];then
   source $external
 fi
 work(){
-  precho "Upgrading all homebrew apps..."
+  precho "Upgrading all homebrew apps (and casks)..."
   # echo
-  brew upgrade 1>/dev/null
+  brew upgrade 1>/dev/null 2>&1
   brew cask upgrade 1>/dev/null
   precho "Scrubbing homebrew's cache..."
   # echo
   brew cleanup -s --prune=31 1>/dev/null
   brew cask cleanup 1>/dev/null
+  precho "Upgrading gems..."
+  gem update 1>/dev/null
 }
 case "$1" in
   --dont-ask | -f)
@@ -20,13 +22,12 @@ case "$1" in
   ;;
 esac
 #confirm upgrade
-precho "Upgrade all homebrew apps now? (y/n)"
-precho "...defaulting to yes in 10s"
-read -t 10
+precho "Upgrade all homebrew apps, casks and gems now? (y/n)"
+precho "...defaulting to no in 5s"
+read -t 5
 if [ "$?" != 0 ]; then
   exit 1
 fi
 if [ "$REPLY" == "y" ] || [ "$REPLY" == "yes" ] || [ "$REPLY" == "Y" ] || [ "$REPLY" == "YES" ]; then
   work
-  exit 0
 fi
