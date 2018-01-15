@@ -3,17 +3,19 @@ external=$HOME/.bash_functions
 if [ -f $external ];then
   source $external
 fi
+if [[ $HOME/bin/progress.sh ]]; then . $HOME/bin/progress.sh; fi
 work(){
-  precho "Upgrading all homebrew apps (and casks)..."
-  # echo
-  brew upgrade 1>/dev/null 2>&1
-  brew cask upgrade 1>/dev/null
-  precho "Scrubbing homebrew's cache..."
-  # echo
-  brew cleanup -s --prune=31 1>/dev/null
-  brew cask cleanup 1>/dev/null
-  precho "Upgrading gems..."
-  gem update 1>/dev/null
+  progress show "Upgrading all homebrew apps (and casks)..."
+    (brew upgrade 1>/dev/null 2>&1
+    brew cask upgrade 1>/dev/null)
+  progress finish "$?"
+  progress show "Scrubbing homebrew's cache..."
+    (brew cleanup -s --prune=31 1>/dev/null
+    brew cask cleanup 1>/dev/null)
+  progress finish "$?"
+  progress show "Upgrading gems..."
+    gem update 1>/dev/null
+  progress finish "$?"
 }
 case "$1" in
   --dont-ask | -f)

@@ -32,6 +32,7 @@ else
   echo "$external not found. Exiting..."
   exit 1
 fi
+if [[ $HOME/bin/progress.sh ]]; then source $HOME/bin/progress.sh; fi
 ##--------------------  Functions --------------------##
 print(){
   precho "Printing input..."
@@ -80,19 +81,16 @@ if ! [ -d "$BKPDIR" ]; then
   precho -c "Seagate is not plugged in! Aborting"
   exit 1
 fi
-echoform 0 49 35
 precho --padding=-1 "💫 🖥 Running $(basename $0) 🖥 💫"
-echoform 0
 echo
 if [[ $skip != "main" ]]; then
   #-- Rsync
-  precho "Copying path list to backup locations... "
+  progress show "Copying path list to backup locations... "
   echo    								                                            >> "$LOGPATH"
   echo "#################### STARTING NEW RUN ####################" 	>> "$LOGPATH"
   echo    								                                            >> "$LOGPATH"
   #cleaning up emacs bkps and other files before sync
   trash-emacs.sh -v							                                      >> "$LOGPATH"
-  # set -x
   for file in "${!PATHS[@]}"; do
     for bkp in "${PATHS[$file]}"; do
       echo -e "\n-> $(date +"%b %d %T ")$file    to     $bkp"		     >> "$LOGPATH"
@@ -104,21 +102,20 @@ if [[ $skip != "main" ]]; then
       $RSYNC $ADDLOG "$file" "$bkp" 1>/dev/null
     done
   done
-  # set +x
-  # echo
+  progress finish "$?"
   echo "_________________________________________________________"	>> "$LOGPATH"
   echo    								                                          >> "$LOGPATH"
 fi
 #-- Applist
-precho "Saving a list of all apps on /Applications..."
+progress show "Saving a list of all apps on /Applications..."
 echo "-> $(date +"%b %d %T ")Applist rsync started"			          >> "$LOGPATH"
-new_applist=./applist.txt
+(new_applist=./applist.txt
 old_applist=$BKPDIR/Bkp/_Mac/others/applist.txt
 runc cd "$HOME/Desktop"
 runc ls /Applications/ > ./applist.txt
 $RSYNC $ADDLOG "$new_applist" "$old_applist"
-runc trash ./applist.txt
-# echo
+runc trash ./applist.txt)
+progress finish "$?"
 echo "_________________________________________________________"	>> "$LOGPATH"
 echo    								                                          >> "$LOGPATH"
 #-- Zip-move
@@ -128,7 +125,7 @@ declare -A ZIPLIST=(
 ["$HOME/Library/Application Support/Waterfox/Profiles/5e3ouofl.default"]="$BKPDIR/Bkp/Firefox/5e3ouofl.default.tar.7z"
 ["/Volumes/Izi/bkp/vuzebkp"]="$BKPDIR/Bkp/_Mac/others/vuzebkp.tar.7z"
 )
-precho "Zipping and moving ziplist..."
+progress show "Zipping and moving ziplist..."
 echo "-> $(date +"%b %d %T ")tar-7zing files using parellel..."        	>> "$LOGPATH"
 runc parallel -i -j$(sysctl -n hw.ncpu) 7z-it.sh {} -- "${!ZIPLIST[@]}"
 echo "-> $(date +"%b %d %T ")Rsyncing zipped files..."			            >> "$LOGPATH"
@@ -140,7 +137,7 @@ for zippedfile in "${!ZIPLIST[@]}"; do
   done
   runc trash "${zippedfile}.tar.7z"
 done
-# echo
+progress finish "$?"
 echo "_________________________________________________________"	      >> "$LOGPATH"
 echo    								                                                >> "$LOGPATH"
 #-- Homebrew upgrade
@@ -148,9 +145,9 @@ if [ -f "$HOME/bin/homebrew-upgrade.sh" ]; then
   $HOME/bin/homebrew-upgrade.sh --dont-ask
 fi
 #-- Mackup
-precho "Running Mackup..."
+progress show "Running Mackup..."
 runc mackup backup
-# echo
+progress finish "$?"
 #-- Brewfile
 if [ "$HOME/bin/brewfile-update.sh" ];then
   $HOME/bin/brewfile-update.sh
