@@ -11,13 +11,13 @@ declare -A PATHS=(
 ["/Users/vamac/Documents/hmac"]="$BKPDIR/Bkp/_Mac/documents/hmac"
 ["/Users/vamac/Documents/mac-memos.rtf"]="$BKPDIR/Bkp/_Mac/documents/mac-memos.rtf"
 ["/Users/vamac/Documents/Native Instruments/"]="$BKPDIR/Bkp/_Mac/documents/Native Instruments/"
+["/Users/vamac/Documents/GoogleDrive/Mackup/"]="$BKPDIR/Bkp/_Mac/documents/Mackup/"
 ["/Volumes/Izi/Ableton/_projects/"]="$BKPDIR/Bkp/Ableton/_projects/"
 ["/Volumes/Izi/Ableton/Factory Packs/"]="$BKPDIR/Bkp/Ableton/Factory Packs/"
 ["/Volumes/Izi/Ableton/User Library/"]="$BKPDIR/Bkp/Ableton/User Library/"
 ["/Users/vamac/Pictures/18/"]="$BKPDIR/Bkp/Pictures/18/"
 ["/Users/vamac/Pictures/walls/"]="$BKPDIR/Bkp/Pictures/walls/"
 ["/Users/vamac/Code/"]="$BKPDIR/Bkp/Code/"
-["/Users/vamac/Desktop/cecats/"]="$BKPDIR/Bkp/_Mac/desktop/cecats/"
 # [""]=""
 # [""]=""
 # [""]=""
@@ -32,7 +32,9 @@ else
   echo "$external not found. Exiting..."
   exit 1
 fi
-if [[ -f "$HOME/bin/progress.sh" ]]; then source $HOME/bin/progress.sh; fi
+if [[ -f "$HOME/bin/progress.sh" ]]; then
+  source $HOME/bin/progress.sh;
+fi
 ##--------------------  Functions --------------------##
 print(){
   precho "Printing input..."
@@ -58,7 +60,6 @@ now-running () {
   echo -e "\e[1;37m"
   center --padding=-1 "💫 🖥 Running $(basename $0) 🖥 💫"
   echo -e "\e[0m"
-  printf '\n'
 }
 pathlist () {  #overwrite smart
   progress start "Copying pathlist to backup locations"
