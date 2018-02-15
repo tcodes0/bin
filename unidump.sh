@@ -16,7 +16,7 @@ hexplusdec () {
   echo -n "$((0x$1 + $2))"
 }
 print-description() {
-  echo
+  printf "\n"
   echo -e $formatStart$description$formatEnd
   description=""
 }
@@ -31,7 +31,7 @@ range () {
   #black foreground for the description line
   formatStart="\e[0;49;30m"
   formatEnd="\e[0m"
-  echo
+  printf "\n"
   echo -e $formatStart"                                        "$formatEnd $b1 $b2 $b3 __$formatEnd
   while [ "$start" -lt "$end" ]; do
     b4=$(dechex-plain $start)
@@ -58,9 +58,10 @@ work() {
       startGroup=$((startGroup+6))
     fi
   done
-  echo
+  printf "\n"
 }
 do-help() {
+  precho --usage
   precho "Dump unicode character groups in utf-8 hex with readable formatting"
   precho "Options:"
   precho "--dingbats	dumps the Dingbats unicode table"

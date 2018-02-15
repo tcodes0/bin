@@ -21,5 +21,5 @@ for sh in $path/*.sh; do
   fi
 done
 if [ $files_found == 0 ]; then
-  precho -c "No suitable files found"
+  precho -r "No suitable files found"
 fi

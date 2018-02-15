@@ -4,7 +4,7 @@ external=$HOME/.bash_functions
 if [ -f "$external" ]; then
   source "$external"
 else
-  precho -c "$external not found. External functions will error"
+  precho -r "$external not found. External functions will error"
 fi
 scheduler-lock () {
   if [ "$1" == "-v" ]; then
@@ -100,20 +100,20 @@ case $1 in
   fi
   ;;
   *)
-  echo -e "scheduler: run a command in certain weekdays"
-  echo -e "--record 		save todays weekday in a record file"
-  echo -e "--check 		check the weekday and execute the command if appropriate"
-  echo -e "--reset                delete record file"
-  echo -e "--lock			create lock file to prevent multiple instances"
-  echo -e "--unlock		remove lock file"
-  echo -e "current command: $command"
-  echo -e "backup days are saturday (6) thursday (4) and tuesday (2), respectively"
-  echo
-  echo -e "exit statuses"
-  echo -e "11	already running ($lock_file is present)"
-  echo -e "12	not ttys000"
-  echo -e "13	not a backup day"
-  echo -e "14	already run today"
+  echo "scheduler: run a command in certain weekdays"
+  echo "--record 		save todays weekday in a record file"
+  echo "--check 		check the weekday and execute the command if appropriate"
+  echo "--reset                delete record file"
+  echo "--lock			create lock file to prevent multiple instances"
+  echo "--unlock		remove lock file"
+  echo "current command: $command"
+  echo "backup days are saturday (6) thursday (4) and tuesday (2), respectively"
+  printf "\n"
+  echo "exit statuses"
+  echo "11	already running ($lock_file is present)"
+  echo "12	not ttys000"
+  echo "13	not a backup day"
+  echo "14	already run today"
   exit 0
   ;;
 esac

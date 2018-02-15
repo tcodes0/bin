@@ -4,7 +4,8 @@ if [ -f $external ];then
   source $external
 fi
 if [ $# != 1 ]; then
-  precho "usage: mp3-parallel.sh [format]"
+  precho --usage
+  precho "mp3-parallel.sh [format]"
   precho "format is: mp3, flac, m4a, alac, ..."
   precho "...defaulting to '.aif' in 3s..."
   read -t 3

@@ -7,7 +7,6 @@ if  [ $# = 0 ]; then
 fi
 #echo "running with format=$1..."
 for song in $@; do
-
     echo parallel -i -j$(sysctl -n hw.ncpu) ffmpeg -i {} -qscale:a 0 {}.mp3 -- "$song"
     #echo rename -s "$song".mp3 .mp3 ./*.mp3
 done

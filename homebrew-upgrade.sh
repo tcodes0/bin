@@ -5,17 +5,17 @@ if [ -f $external ];then
 fi
 if [[ $HOME/bin/progress.sh ]]; then . $HOME/bin/progress.sh; fi
 work(){
-  progress show "Upgrading all homebrew apps (and casks)..."
+  progress start "Upgrading all homebrew apps (and casks)"
     (brew upgrade 1>/dev/null 2>&1
     brew cask upgrade 1>/dev/null)
-  progress finish "$?"
-  progress show "Scrubbing homebrew's cache..."
+    progress finish "$?"
+  progress start "Scrubbing homebrew's cache"
     (brew cleanup -s --prune=31 1>/dev/null
     brew cask cleanup 1>/dev/null)
-  progress finish "$?"
-  progress show "Upgrading gems..."
+    progress finish "$?"
+  progress start "Upgrading gems"
     gem update 1>/dev/null
-  progress finish "$?"
+    progress finish "$?"
 }
 case "$1" in
   --dont-ask | -f)

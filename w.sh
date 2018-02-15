@@ -6,7 +6,7 @@ fi
 mupush () {
   precho "git checkout master"
   runc -c git checkout master
-  prehco "git merge wip"
+  precho "git merge wip"
   runc -c git merge wip
   precho "git push"
   runc -c git push

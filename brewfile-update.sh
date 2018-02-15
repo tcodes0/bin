@@ -4,7 +4,7 @@ if [ -f $external ];then
   source $external
 fi
 if [[ $HOME/bin/progress.sh ]]; then . $HOME/bin/progress.sh; fi
-progress show "Updating Brewfile..."
+progress start "Updating Brewfile..."
 (runc cd "$HOME/Desktop"
 if [ -f ./Brewfile ];then #prevents an error from previous run's files
   trash ./Brewfile

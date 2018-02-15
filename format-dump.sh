@@ -2,8 +2,8 @@
 case "$1" in
   --help | -h)
     echo "$0: dump formating options to std out"
-    echo "		by default dumps only not-crazy-looking formats"
-    echo "		use -a or --all to dump all possible formats"
+    echo "    by default dumps only not-crazy-looking formats"
+    echo "    use -a or --all to dump all possible formats"
   ;;
   --all | -a)
     #echo provokes expansion
@@ -27,9 +27,9 @@ for clbg in $bgrange ; do
     #Formatting
     for attr in $fmrange ; do
       #Print the result
-      echo -en "\e[${attr};${clbg};${clfg}m ^e[${attr};${clbg};${clfg}m \e[0m"
+      echo -en "\e[${attr};${clbg};${clfg}m \\\e[${attr};${clbg};${clfg}m \e[0m"
     done
-    echo
+    printf "\n"
   done
 done
 exit 0
