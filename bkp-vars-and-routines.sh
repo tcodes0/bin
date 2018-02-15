@@ -60,7 +60,7 @@ now-running () {
   echo -e "\e[0m"
   printf '\n'
 }
-pathlist () {
+pathlist () {  #overwrite smart
   progress start "Copying pathlist to backup locations"
   printf "\n" 						                                            >> "$LOGPATH"
   echo "#################### STARTING NEW RUN ####################" 	>> "$LOGPATH"
@@ -82,7 +82,7 @@ pathlist () {
   echo "_________________________________________________________"	>> "$LOGPATH"
   printf "\n"    					                                          >> "$LOGPATH"
 }
-app-list() {
+app-list() { #overwrite dumb
   progress start "Saving a list of all apps on /Applications"
   echo "-> $(date +"%b %d %T ")Applist rsync started"			          >> "$LOGPATH"
   (new_applist=./applist.txt
@@ -95,7 +95,7 @@ app-list() {
   echo "_________________________________________________________"	>> "$LOGPATH"
   printf "\n"    						                                        >> "$LOGPATH"
 }
-zip-move() {
+zip-move() { #overwrite dumb
   #do NOT end file paths with a trailing slash/. It will zip contents ONLY and create a file named .tar.7z (hidden)
   declare -A ZIPLIST=(
   #old ff path: "/Users/Shared/5e3ouofl.default"
@@ -118,17 +118,17 @@ zip-move() {
   echo "_________________________________________________________"	      >> "$LOGPATH"
   printf "\n"								                                              >> "$LOGPATH"
 }
-do-homebrew () {
+do-homebrew () { #new apps not on system will dl as lastest so its good.
   if [ -f "$HOME/bin/homebrew-upgrade.sh" ]; then
     $HOME/bin/homebrew-upgrade.sh --dont-ask
   fi
 }
-do-mackup (){
+do-mackup (){ #need to test how google drive handles these files, but if but on path list should be safe.
   progress start "Running Mackup"
   runc mackup backup
   progress finish "$?"
 }
-do-brewfile () {
+do-brewfile () { #will overwrite if different. could rewrite to use rsync, and then it would be safe.
   if [ -f "$HOME/bin/brewfile-update.sh" ];then
     $HOME/bin/brewfile-update.sh
   fi
