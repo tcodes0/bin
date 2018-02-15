@@ -24,6 +24,13 @@ if ! [ -d "$BKPDIR" ]; then
   precho -r "Seagate is not plugged in! Aborting"
   exit 1
 fi
+#-- Test for abrupt bash restore
+if [ -f "$HOME/.bash-shutdown-dirty" ]; then
+  precho -r "$HOME/.bash-shutdown-dirty is present"
+  precho -r "Possible abrupt bash restore. Aborting"
+  exit 1
+fi
+exit 
 ######----------------- Main  -----------------######
 now-running
 pathlist
