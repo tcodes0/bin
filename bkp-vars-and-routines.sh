@@ -1,25 +1,28 @@
 #! /usr/bin/env bash
 ##-----------------------  Input  ----------------------##
 declare LOGPATH="$HOME/Desktop/bkp-log.txt"
-declare ADDLOG="--log-file $LOGPATH"
+# declare ADDLOG="--log-file $LOGPATH"
+declare ADDLOG=""
 declare RSYNC="rsync --recursive --update --inplace --no-relative"
 declare BKPDIR="/Volumes/Seagate"
+declare SAFECOPYDIR="/Volumes/Izi"
 declare -A PATHS=(
 # DO end paths with a trailing slash/
 ["/Users/vamac/bin/"]="$BKPDIR/Bkp/_Mac/bin/"
 ["/EFI-Backups/"]="$BKPDIR/Bkp/_Mac/others/EFI-Backups/"
-["/Users/vamac/Documents/hmac"]="$BKPDIR/Bkp/_Mac/documents/hmac"
-["/Users/vamac/Documents/mac-memos.rtf"]="$BKPDIR/Bkp/_Mac/documents/mac-memos.rtf"
-["/Users/vamac/Documents/Native Instruments/"]="$BKPDIR/Bkp/_Mac/documents/Native Instruments/"
-["/Users/vamac/Documents/GoogleDrive/Mackup/"]="$BKPDIR/Bkp/_Mac/documents/Mackup/"
+["/Users/vamac/Documents/"]="$BKPDIR/Bkp/_Mac/documents/"
 ["/Volumes/Izi/Ableton/_projects/"]="$BKPDIR/Bkp/Ableton/_projects/"
 ["/Volumes/Izi/Ableton/Factory Packs/"]="$BKPDIR/Bkp/Ableton/Factory Packs/"
 ["/Volumes/Izi/Ableton/User Library/"]="$BKPDIR/Bkp/Ableton/User Library/"
-["/Users/vamac/Pictures/18/"]="$BKPDIR/Bkp/Pictures/18/"
+["/Users/vamac/Pictures/2018/"]="$BKPDIR/Bkp/Pictures/2018/"
 ["/Users/vamac/Pictures/walls/"]="$BKPDIR/Bkp/Pictures/walls/"
 ["/Users/vamac/Code/"]="$BKPDIR/Bkp/Code/"
 # [""]=""
 # [""]=""
+["/Users/vamac/Desktop/"]="$SAFECOPYDIR/bkp/Desktop/"
+["/Users/vamac/Downloads/"]="$SAFECOPYDIR/bkp/Downloads/"
+["/Users/vamac/Movies/"]="$SAFECOPYDIR/bkp/Movies/"
+["/Users/vamac/VirtualBox VMs/"]="$SAFECOPYDIR/bkp/VirtualBox/"
 # [""]=""
 # [""]=""
 # [""]=""
@@ -40,12 +43,10 @@ print(){
   precho "Printing input..."
   for file in "${!PATHS[@]}"; do
     for bkp in "${PATHS[$file]}"; do
-      printf '\n'
-      echo "File - $file"
-      echo "Dest - $bkp"
+      echo -en '\e[97;1m'; echo "  File - $file"
+      echo -en '\e[0m';    echo "Backup - $bkp"
     done
   done
-  printf '\n'
   return
 }
 help(){
