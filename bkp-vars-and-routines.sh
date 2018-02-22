@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 ##-----------------------  Input  ----------------------##
-declare LOGPATH="$HOME/Desktop/bkp-log.txt"
+# declare LOGPATH="$HOME/Desktop/bkp-log.txt"
+declare LOGPATH="/dev/null"
 # declare ADDLOG="--log-file $LOGPATH"
 declare ADDLOG=""
 declare RSYNC="rsync --recursive --update --inplace --no-relative"
