@@ -13,9 +13,9 @@ work(){
     (brew cleanup -s --prune=31 1>/dev/null
     brew cask cleanup 1>/dev/null)
     progress finish "$?"
-  progress start "Upgrading gems"
-    gem update 1>/dev/null
-    progress finish "$?"
+  # progress start "Upgrading gems"
+  #   gem update 1>/dev/null
+  #   progress finish "$?"
 }
 case "$1" in
   --dont-ask | -f)
