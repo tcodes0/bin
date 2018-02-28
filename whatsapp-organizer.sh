@@ -1,111 +1,159 @@
 #! /usr/bin/env bash
-if [[ -f ~/.bash_functions ]]; then
-  . ~/.bash_functions
-else
-  precho ~/.bash_functions not found.
-  exit 1
-fi
-if [[ -d 'WhatsApp Images' ]]; then
-  runc -c cd 'WhatsApp Images'
-else
-  precho no WhatsApp Images folder found
-  exit 1
-fi
-years=$(echo 20{0..9}{0..9})
+# - - -- - - - - - - - - - - - - - - - - - - - - - - -  Vars
 months="01 02 03 04 05 06 07 08 09 10 11 12"
-for year in $years; do
-  files=$(gfind . -maxdepth 1 -name "IMG-${year}*")
-  if [[ $files != '' ]]; then
-    # replace all filenames " " with _
-    gfind . -maxdepth 1 -name "IMG-${year}*" -print0 | rename -0 -S " " "_"
-    if [[ ! -d $year ]]; then
-      runc -c mkdir $year
-    fi
-    for month in $months; do
-      mfiles=$(gfind . -maxdepth 1 -name "IMG-${year}${month}*")
-      if [[ $mfiles != '' ]]; then
-        # echo $month - $mfiles
-        if [[ ! -d $year/$month ]]; then
-          runc -c mkdir $year/$month
-        fi
-        # echo mv IMG-$year$month* $year/$month
-        for mfile in $mfiles; do
-          # unquotedfile=$(gsed -Ee "s/'//g" <<< $mfile)
-          # echo $mfile
-          # echo mfile - "$mfile"
-          mv $mfile ./$year/$month
-        done
-      fi
-    done
-    # cd ../
-  fi
-  files=''
-done
-if [[ -d Sent ]]; then
-  cd Sent
+# - - -- - - - - - - - - - - - - - - - - - - - - - - -  Functions
+findYearsWithFiles () {
+  #1 a dir to search on
+  #2 $pat global
+  #returns a list of years
+  local where=$1
+  local years=$(echo {2000..2099})
+  local results=''
   for year in $years; do
-    files=$(gfind . -maxdepth 1 -name "IMG-${year}*")
-    if [[ $files != '' ]]; then
-      gfind . -maxdepth 1 -name "IMG-${year}*" -print0 | rename -0 -S " " "_"
-      if [[ ! -d ../$year ]]; then
-        runc -c mkdir ../$year
-      fi
-      for month in $months; do
-        sentfiles=$(gfind . -maxdepth 1 -name "IMG-${year}${month}*")
-        if [[ $sentfiles != '' ]]; then
-          # echo $month - $sentfiles
-          if [[ ! -d ../$year/$month/sent ]]; then
-            runc -c mkdir ../$year/$month/sent
-          fi
-          # echo mv IMG-$year$month* $year/$month
-          for sentfile in $sentfiles; do
-            # unquotedfile=$(gsed -Ee "s/'//g" <<< $sentfile)
-            # echo $sentfile
-            # echo sentfile - "$sentfile"
-            mv $sentfile ../$year/$month/sent
-          done
-        fi
-      done
+    if [[ $(gfind "$where" -maxdepth 1 -name "${pat}${year}*") != '' ]]; then
+      results=$results" "$year
     fi
   done
-  cd ../
+  echo -n $results
+}
+moveFiles() {
+  #1 a dir to search on
+  #2 a list of years
+  #3 $pat global
+  #4 $months global
+  #sideffect moves files
+  if [ $dry ]; then echo -e "\n\n\n\n--------------------------- MOVING -------------------------\n\n\n\n" ; fi
+  local where=$1
+  shift
+  local years=$@
+  local files=''
+  local destination=''
+  local fileType=''
+  for year in $years; do
+    gfind "$where" -maxdepth 1 -name "${pat}${year}*" -print0 | rename -0 --sanitize
+      for month in $months; do
+        files=$(gfind "$where" -maxdepth 1 -name "${pat}${year}${month}*")
+        if [[ $files != '' ]]; then
+          if [[ $where =~ Video ]]; then
+            fileType=zap-vids
+          else
+            fileType=zap
+          fi
+          if [[ $where =~ Sent ]]; then
+            destination="$(dirname $dir)/$year/$month/$fileType/sent"
+          else
+            destination="$dir/$year/$month/$fileType"
+          fi
+          if [[ ! -d $destination ]]; then
+            $dry runc -c mkdir -p $destination
+          fi
+          for file in $files; do
+            $dry mv "$file" $destination
+          done
+        fi
+        files=''
+      done
+  done
+}
+source_bashFunctions () {
+  if [[ -f ~/.bash_functions ]]; then
+    . ~/.bash_functions
+  else
+    echo ~/.bash_functions not found.
+    exit 1
+  fi
+}
+find_whatsappDir () {
+  if [[ -d 'WhatsApp Images' ]] && [ "$pat" == "IMG-" ]; then
+    runc -c mv WhatsApp\ Images WhatsApp_Images
+    dir=./WhatsApp_Images
+  elif [[ -d 'WhatsApp_Images' ]] && [ "$pat" == "IMG-" ]; then
+    dir=./WhatsApp_Images
+  elif [[ -d 'WhatsApp Video' ]] && [ "$pat" == "VID-" ]; then
+    runc -c mv WhatsApp\ Video WhatsApp_Video
+    dir=./WhatsApp_Video
+  elif [[ -d 'WhatsApp_Video' ]] && [ "$pat" == "VID-" ]; then
+    dir=./WhatsApp_Video
+  else
+    precho no WhatsApp Images or WhatsApp Video folder found
+    exit 1
+  fi
+}
+renameFolders (){
+  if [ $dry ]; then echo -e "\n\n\n\n--------------------------- RENAMING -------------------------\n\n\n\n" ; fi
+  #1 dir global
+  local folders=$(gfind "$dir" -regextype posix-extended -regex '.*[/][0-9][0-9]')
+  if [[ "$folders" == '' ]]; then
+    echo "no hits for renaming"
+  fi
+  for folder in $folders; do
+    case $folder in
+      *01)
+        $dry mv $folder ${folder}jan
+      ;;
+      *02)
+        $dry mv $folder ${folder}feb
+      ;;
+      *03)
+        $dry mv $folder ${folder}mar
+      ;;
+      *04)
+        $dry mv $folder ${folder}apr
+      ;;
+      *05)
+        $dry mv $folder ${folder}may
+      ;;
+      *06)
+        $dry mv $folder ${folder}jun
+      ;;
+      *07)
+        $dry mv $folder ${folder}jul
+      ;;
+      *08)
+        $dry mv $folder ${folder}aug
+      ;;
+      *09)
+        $dry mv $folder ${folder}sep
+      ;;
+      *10)
+        $dry mv $folder ${folder}oct
+      ;;
+      *11)
+        $dry mv $folder ${folder}nov
+      ;;
+      *12)
+        $dry mv $folder ${folder}dec
+      ;;
+    esac
+  done
+}
+args (){
+  #1 takes args given to script
+  if [[ "$#" == 0 ]] || [ "$1" == "-h" ] || [ "$1" == "--help" ] ; then
+    precho "process images with --imgs and videos with --vids"
+    precho "automatically finds WhatsApp Images or WhatsApp Video folder"
+    precho "pass --dry-run as second arg to print commands only"
+    exit
+  elif [[ "$1" == "--vids" ]]; then
+    pat=VID-
+    shift
+  elif [[ "$1" == "--imgs" ]]; then
+    pat=IMG-
+    shift
+  fi
+  if [[ "$1" == "--dry-run" ]]; then
+    dry="echo"
+  fi
+}
+# - - -- - - - - - - - - - - - - - - - - - - - - - - -  Code
+source_bashFunctions
+args $@
+find_whatsappDir
+renameFolders
+exit
+moveFiles $dir $(findYearsWithFiles $dir)
+if [[ -d "$dir/Sent" ]]; then
+  dir=$dir/Sent
+  moveFiles $dir $(findYearsWithFiles $dir)
+  $dry trash $dir
 fi
-cd ../
-# case $month in
-#     "01")
-#       mv ./$year/$month ./$year/${month}jan
-#     ;;
-#     "02")
-#       mv ./$year/$month ./$year/${month}feb
-#     ;;
-#     "03")
-#       mv ./$year/$month ./$year/${month}mar
-#     ;;
-#     "04")
-#       mv ./$year/$month ./$year/${month}apr
-#     ;;
-#     "05")
-#       mv ./$year/$month ./$year/${month}may
-#     ;;
-#     "06")
-#       mv ./$year/$month ./$year/${month}jun
-#     ;;
-#     "07")
-#       mv ./$year/$month ./$year/${month}jul
-#     ;;
-#     "08")
-#       mv ./$year/$month ./$year/${month}aug
-#     ;;
-#     "09")
-#       mv ./$year/$month ./$year/${month}sep
-#     ;;
-#     "10")
-#       mv ./$year/$month ./$year/${month}oct
-#     ;;
-#     "11")
-#       mv ./$year/$month ./$year/${month}nov
-#     ;;
-#     "12")
-#       mv ./$year/$month ./$year/${month}dec
-#     ;;
-#   esac
