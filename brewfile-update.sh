@@ -1,6 +1,6 @@
 #! /bin/bash
 if [[ $HOME/bin/progress.sh ]]; then . $HOME/bin/progress.sh; fi
-progress start "Updating Brewfile..."
+progress start "Updating Brewfile"
 (cd "$HOME/Desktop" || bailout
 if [ -f ./Brewfile ];then #prevents an error from previous run's files
   trash ./Brewfile

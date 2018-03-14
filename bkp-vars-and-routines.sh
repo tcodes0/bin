@@ -121,7 +121,7 @@ do-homebrew () { #new apps not on system will dl as lastest so its good.
 }
 do-mackup (){ #need to test how google drive handles these files, but if but on path list should be safe.
   progress start "Running Mackup"
-  mackup backup || bailout
+  mackup backup 1>/dev/null || bailout
   progress finish "$?"
 }
 do-brewfile () { #will overwrite if different. could rewrite to use rsync, and then it would be safe.
