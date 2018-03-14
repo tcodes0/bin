@@ -33,6 +33,6 @@ do-homebrew
 do-mackup
 do-brewfile
 #-- progress
-progress total
+progress total ~/.bkp-run-times
 #-- Scheduler
 scheduler.sh --record

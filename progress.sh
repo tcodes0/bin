@@ -75,7 +75,12 @@ function progress() {
       unset progress_speed progress_runner progress_message progress_pid progress_line_length progress_pad_left
       ;;
     "total")
+      shift
       progress_message="Total "
+      if [[ -f "$1" ]]; then
+        echo "$(print_time $SECONDS)" >> "$1"
+        progress_message="Total✝ "
+      fi
       progress_line_length=$(tput cols)
       progress_pad_left=$(($progress_line_length-${#progress_message}-5))
       printf "%${progress_pad_left}s\e[33;1m%s%s%s\e[0m\n" '' "$progress_message" "$(print_time $SECONDS)" "$progress_message2"
