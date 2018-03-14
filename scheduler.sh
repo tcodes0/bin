@@ -20,7 +20,7 @@ scheduler-lock () {
     shift
   fi
   if ! [ -f "$lock_file" ]; then
-    runc touch "$lock_file"
+    touch "$lock_file" || bailout
     if [ "$verbose" == "true" ]; then
       precho "lock file created"
     fi
@@ -33,7 +33,7 @@ scheduler-reset () {
     shift
   fi
   if ! [ -f "$record_file" ]; then
-    runc trash "$record_file"
+    trash "$record_file" || bailout
     if [ "$verbose" == "true" ]; then
       precho "record file removed"
     fi
@@ -46,7 +46,7 @@ scheduler-unlock () {
     shift
   fi
   if [ -f "$lock_file" ]; then
-    runc trash "$lock_file"
+    trash "$lock_file" || bailout
     if [ "$verbose" == "true" ]; then
       precho "lock file removed"
     fi
@@ -69,7 +69,7 @@ run-command-with-lock () {
 #======================================== main
 case $1 in
   --record)
-  runc echo $todays_weekday > $record_file
+  echo $todays_weekday > $record_file || bailout
   exit 0
   ;;
   --lock)

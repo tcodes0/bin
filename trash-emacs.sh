@@ -1,7 +1,7 @@
 #! /bin/bash
 #---------------------------------------- FUNC
 work () {
-  runc -c cd "$1"
+  cd "$1" || bailout
   count=0
   #if enclosed in quotes the patterns var below does not expand.
   for file in $patterns; do

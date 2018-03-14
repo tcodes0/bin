@@ -83,10 +83,10 @@ app-list() { #overwrite dumb
   echo "-> $(date +"%b %d %T ")Applist rsync started"			          >> "$LOGPATH"
   (new_applist=./applist.txt
   old_applist=$BKPDIR/Bkp/_Mac/others/applist.txt
-  runc cd "$HOME/Desktop"
-  runc ls /Applications/ > ./applist.txt
+  cd "$HOME/Desktop" || bailout
+  ls /Applications/ > ./applist.txt || bailout
   $RSYNC $ADDLOG "$new_applist" "$old_applist"
-  runc trash ./applist.txt)
+  trash ./applist.txt || bailout)
   progress finish "$?"
   echo "_________________________________________________________"	>> "$LOGPATH"
   printf "\n"    						                                        >> "$LOGPATH"
@@ -100,7 +100,7 @@ zip-move() { #overwrite dumb
   )
   progress start "Zipping and moving ziplist"
   echo "-> $(date +"%b %d %T ")tar-7zing files using parellel..."        	>> "$LOGPATH"
-  runc parallel -i -j$(sysctl -n hw.ncpu) 7z-it.sh {} -- "${!ZIPLIST[@]}"
+  parallel -i -j$(sysctl -n hw.ncpu) 7z-it.sh {} -- "${!ZIPLIST[@]}" || bailout
   echo "-> $(date +"%b %d %T ")Rsyncing zipped files..."			            >> "$LOGPATH"
   for zippedfile in "${!ZIPLIST[@]}"; do
     for bkp in "${ZIPLIST[$zippedfile]}"; do
@@ -108,7 +108,7 @@ zip-move() { #overwrite dumb
       echo "-> $(date +"%b %d %T ")Rsyncing $zippedfile to $bkp"	        >> "$LOGPATH"
       $RSYNC $ADDLOG "${zippedfile}.tar.7z" "$bkp"
     done
-    runc trash "${zippedfile}.tar.7z"
+    trash "${zippedfile}.tar.7z" || bailout
   done
   progress finish "$?"
   echo "_________________________________________________________"	      >> "$LOGPATH"
@@ -121,7 +121,7 @@ do-homebrew () { #new apps not on system will dl as lastest so its good.
 }
 do-mackup (){ #need to test how google drive handles these files, but if but on path list should be safe.
   progress start "Running Mackup"
-  runc mackup backup
+  mackup backup || bailout
   progress finish "$?"
 }
 do-brewfile () { #will overwrite if different. could rewrite to use rsync, and then it would be safe.

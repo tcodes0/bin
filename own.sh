@@ -12,7 +12,7 @@ for sh in $path/*.sh; do
     precho "Chmod $(basename $sh)? (y/n)"
     read -e
     if [ $REPLY == "y" ] || [ $REPLY == "yes" ];then
-      runc sudo chmod u+x "$sh"
+      sudo chmod u+x "$sh" || bailout
     fi
   fi
 done

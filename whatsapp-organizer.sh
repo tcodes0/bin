@@ -45,7 +45,7 @@ moveFiles() {
             destination="$dir/$year/$month/$fileType"
           fi
           if [[ ! -d $destination ]]; then
-            $dry runc -c mkdir -p $destination
+            $dry mkdir -p $destination || bailout
           fi
           for file in $files; do
             $dry mv "$file" $destination
@@ -55,22 +55,14 @@ moveFiles() {
       done
   done
 }
-source_bashFunctions () {
-  if [[ -f ~/.bash_functions ]]; then
-    . ~/.bash_functions
-  else
-    echo ~/.bash_functions not found.
-    exit 1
-  fi
-}
 find_whatsappDir () {
   if [[ -d 'WhatsApp Images' ]] && [ "$pat" == "IMG-" ]; then
-    runc -c mv WhatsApp\ Images WhatsApp_Images
+     mv WhatsApp\ Images WhatsApp_Images || bailout
     dir=./WhatsApp_Images
   elif [[ -d 'WhatsApp_Images' ]] && [ "$pat" == "IMG-" ]; then
     dir=./WhatsApp_Images
   elif [[ -d 'WhatsApp Video' ]] && [ "$pat" == "VID-" ]; then
-    runc -c mv WhatsApp\ Video WhatsApp_Video
+     mv WhatsApp\ Video WhatsApp_Video || bailout
     dir=./WhatsApp_Video
   elif [[ -d 'WhatsApp_Video' ]] && [ "$pat" == "VID-" ]; then
     dir=./WhatsApp_Video
@@ -146,7 +138,6 @@ args (){
   fi
 }
 # - - -- - - - - - - - - - - - - - - - - - - - - - - -  Code
-source_bashFunctions
 args $@
 find_whatsappDir
 renameFolders
