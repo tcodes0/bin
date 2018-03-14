@@ -1,8 +1,4 @@
 #!/bin/bash
-external=$HOME/.bash_functions
-if [ -f "$external" ]; then
-  source "$external"
-fi
 mupush () {
   precho "git checkout master"
   runc -c git checkout master

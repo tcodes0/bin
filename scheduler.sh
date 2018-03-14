@@ -14,12 +14,6 @@ lock_file=~/.scheduler-lock
 command="$HOME/bin/bkp.sh"
 should_run=''
 #======================================== functions
-external=$HOME/.bash_functions
-if [ -f "$external" ]; then
-  source "$external"
-else
-  precho -r "$external not found. External functions will error"
-fi
 scheduler-lock () {
   if [ "$1" == "-v" ]; then
     verbose="true"

@@ -1,11 +1,5 @@
 #! /bin/bash
 #---------------------------------------- FUNC
-external=$HOME/.bash_functions
-if [ -f "$external" ]; then
-  source "$external"
-else
-  echo -c "$external not found. External functions will error"
-fi
 work () {
   runc -c cd "$1"
   count=0

@@ -1,8 +1,4 @@
 #! /bin/bash
-external=$HOME/.bash_functions
-if [ -f $external ];then
-  source $external
-fi
 if [ $# != 1 ]; then
   precho --usage
   precho "mp3-parallel.sh [format]"

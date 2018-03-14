@@ -29,13 +29,6 @@ declare -A PATHS=(
 # [""]=""
 )
 ##------------------  External deps -------------------##
-external=$HOME/.bash_functions
-if [ -f "$external" ]; then
-  source "$external"
-else
-  echo "$external not found. Exiting..."
-  exit 1
-fi
 if [[ -f "$HOME/bin/progress.sh" ]]; then
   source $HOME/bin/progress.sh;
 fi

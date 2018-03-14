@@ -1,11 +1,5 @@
 #!/bin/bash
 #---------------------------------------------------------------------- Funcs
-external_function_file=$HOME/.bash_functions
-if [ -f "$external_function_file" ]; then
-  source "$external_function_file"
-else
-  echo "$external_function_file not found. External functions will error"
-fi
 hexdec-plain () {
   echo -n "$((0x$1))"
 }

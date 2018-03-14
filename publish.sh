@@ -1,11 +1,4 @@
 #! /usr/bin/env bash
-external=$HOME/.bash_functions
-if [ -f "$external" ]; then
-  source "$external"
-else
-  echo "$external not found. Exiting..."
-  exit 1
-fi
 if [[ ! "$(dirname $PWD)" =~ ^/Users/vamac/Code ]]; then   # Don't run outside ~/Code
   bailout "Can't run publish outside $(echo ~/Code)"
 fi

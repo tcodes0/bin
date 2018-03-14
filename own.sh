@@ -1,8 +1,4 @@
 #! /bin/bash
-external=$HOME/.bash_functions
-if [ -f $external ];then
-  source $external
-fi
 files_found=0
 if [ -d "$1" ];then
   path=$1

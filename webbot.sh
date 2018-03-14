@@ -1,7 +1,4 @@
 #! /usr/bin/env bash
-if [ -f $HOME/.bash_functions ];then
-  source $HOME/.bash_functions
-fi
 do-help() {
   precho "run sass --watch and reload here: $(pwd)"
   precho '--sass-only, -s:\tdont run reload'

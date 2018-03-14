@@ -1,8 +1,4 @@
 #! /bin/bash
-external=$HOME/.bash_functions
-if [ -f $external ];then
-  source $external
-fi
 if [[ $HOME/bin/progress.sh ]]; then . $HOME/bin/progress.sh; fi
 work(){
   progress start "Upgrading all homebrew apps (and casks)"
