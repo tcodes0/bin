@@ -1,16 +1,10 @@
 #! /usr/bin/env bash
-external=$HOME/.bash_functions
-if [ -f $external ];then
-  source $external
+if [ -f $HOME/.bash_functions ];then
+  source $HOME/.bash_functions
 fi
-do-sass() {
-  sass --watch css/index.sass:css/index.css   2>/dev/null 1>&2 &
-  sass --watch css/grid.sass:css/grid.css     2>/dev/null 1>&2 &
-  sass --watch css/boiler.sass:css/boiler.css 2>/dev/null 1>&2 &
-}
 do-help() {
   precho "run sass --watch and reload here: $(pwd)"
-  precho '--only_sass, -s:\tdont run reload'
+  precho '--sass-only, -s:\tdont run reload'
 }
 if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
   do-help
