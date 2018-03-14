@@ -4,7 +4,7 @@
 declare LOGPATH="/dev/null"
 # declare ADDLOG="--log-file $LOGPATH"
 declare ADDLOG=""
-declare RSYNC="rsync --recursive --update --inplace --no-relative"
+declare RSYNC="rsync --recursive --update --inplace --no-relative --checksum"
 declare BKPDIR="/Volumes/Seagate"
 declare SAFECOPYDIR="/Volumes/Izi"
 declare -A PATHS=(
