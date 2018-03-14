@@ -20,4 +20,4 @@ echoform 1 49 32 "✔ Killing sourcemapping lines in css files on ./public/css/"
 for file in ./public/css/*.css; do
   gsed --in-place --regexp-extended --expression='/[/][*]# sourceMappingURL.*[*][/]/d' $file
 done
-publish-upload
+publish-rsync
