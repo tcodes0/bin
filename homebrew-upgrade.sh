@@ -9,9 +9,13 @@ work(){
     (brew cleanup -s --prune=31 1>/dev/null
     brew cask cleanup 1>/dev/null)
     progress finish "$?"
-  # progress start "Upgrading gems"
-  #   gem update 1>/dev/null
-  #   progress finish "$?"
+  progress start "Updating NPM global packages"
+    npm update -g 1>/dev/null 2>&1
+    progress finish "$?"
+  progress start "Updating gems"
+  # /usr/bin/gem often conflicts. MacOS version is root - wheel, no write perm.
+  /usr/local/bin/gem update 1>/dev/null
+    progress finish "$?"
 }
 case "$1" in
   --dont-ask | -f)
