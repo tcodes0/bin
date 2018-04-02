@@ -1,8 +1,15 @@
 #/usr/bin/env bash
 
 parse-options() {
-#1 - string containing shorts (-s) longs (--longs) and params
+#input - string containing shorts (-s) longs (--longs) and params
 #returns - arrays with parsed data and boolean opts set as vars
+#shorts take no arguments, to give args to an option use a --long=with_equals
+
+# for debuging
+if [[ "$1" == "--debug" ]]; then
+  set -x
+  shift
+fi
 
 if [[ "$#" == 0 ]]; then
   precho "input: string containing shorts (-s) longs (--longs) and params"
@@ -64,17 +71,17 @@ for arg in "$@"; do
     # since shorts can be chained (-gpH), look at one char at a time
     while [ $i != ${#arg} ]; do
       short=${arg:$i:1}
-      # if this is the last short in the chain AND the next arg has no leading - or --
-      if [[ $i == $((${#arg} - 1)) ]] && [[ $(eval echo \$$((argn + 1))) =~ ^[[:alnum:]] ]]; then
-        # then it must be the last short's argument
-        export $short=$(eval echo \$$((argn + 1)))
-        shortsWithArgs+=($short)
-        # set flag to avoid processing next arg again
-        alreadyProcessedNext=" "
-      else
-        #no arg, just push
+      # # if this is the last short in the chain AND the next arg has no leading - or --
+      # if [[ $i == $((${#arg} - 1)) ]] && [[ $(eval echo \$$((argn + 1))) =~ ^[[:alnum:]] ]]; then
+      #   # then it must be the last short's argument
+      #   export $short=$(eval echo \$$((argn + 1)))
+      #   shortsWithArgs+=($short)
+      #   # set flag to avoid processing next arg again
+      #   alreadyProcessedNext=" "
+      # else
+      #   #no arg, just push
         shorts+=($short)
-      fi
+      # fi
       i=$((i + 1))
     done
     continue
@@ -97,37 +104,37 @@ done
 
 get-shorts() {
   for short in ${shorts[@]}; do
-    printf $short" "
+    echo -ne "$short "
   done
   for short in ${shortsWithArgs[@]}; do
-    printf $short"* "
+    echo -ne "${short}* "
   done
   printf "\n"
 }
 
 get-longs() {
   for long in ${longs[@]}; do
-    printf $long" "
+    echo -ne "$long "
   done
   for long in ${longsWithArgs[@]}; do
-    printf $long"* "
+    echo -ne "${long}* "
   done
   printf "\n"
 }
 
 get-arguments() {
   for arg in ${arguments[@]}; do
-    printf $arg" "
+    echo -ne "$arg "
   done
   printf "\n"
 }
 
 get-optionsWithArgs() {
   for opt in ${shortsWithArgs[@]}; do
-    printf $opt"* "
+    echo -ne "${opt}* "
   done
   for opt in ${longsWithArgs[@]}; do
-    printf $opt"* "
+    echo -ne "${opt}* "
   done
   printf "\n"
 }
