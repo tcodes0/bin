@@ -3,9 +3,9 @@
   parse-options "$@"
 
   if [[ -n $h ]] || [[ -n $help ]]; then
-    printf "\e[94;100musage: color --yellow --bold foobar \
-    \nresult: \e[33;1;49mfoobar\e[0;94;100m \n\
-    \ncolors:\n\
+    printf "\e[1;36m♦︎ usage: color --yellow --bold foobar \
+    \n  result: \e[33;1;49mfoobar\e[1;36m \n\
+    \n  colors:\n\
     --black\t --purple \n\
     --red\t --pink \n\
     --green\t --teal \n\
@@ -15,17 +15,18 @@
     --light-red  \t --light-pink \n\
     --light-green\t --light-teal \n\
     --light-yellow\t --light-grey \n\
-    \nstyles: \n\
+    \n  styles: \n\
     --bold\t --underline \n\
     --dim\t --blink \n\
     --box \n\
-    \nbackgrounds: \n\
+    \n  backgrounds: \n\
     --bg=white\t --bg=black\t --bg=light-black \n\
-    \nto see all possible formats try:\n\
+    \n  to see all possible formats try:\n\
     format-dump.sh\t format-dump.sh -a\e[0m\n"
     exit
   fi
 
+  # styles
   # only bold or white and bold prints yellow. Implementation quirk.
   if [[ -n $bold ]]; then
     printf "\e[1m"
@@ -76,16 +77,58 @@
     printf "\e[97m"
   fi
 
-  # non-crazy backgrounds
+  # backgrounds
   case $bg in
-    "black")
+    black)
       printf "\e[40m"
     ;;
-    "light_black")
+    red)
+      printf "\e[41m"
+    ;;
+    green)
+      printf "\e[42m"
+    ;;
+    yellow)
+      printf "\e[43m"
+    ;;
+    purple)
+      printf "\e[44m"
+    ;;
+    pink)
+      printf "\e[45m"
+    ;;
+    teal)
+      printf "\e[46m"
+    ;;
+    gray | grey)
+      printf "\e[47m"
+    ;;
+    white)
+      printf "\e[49m"
+    ;;
+    light_black)
       printf "\e[100m"
     ;;
-    "white")
-      printf "\e[49m"
+    light_red)
+      printf "\e[101m"
+    ;;
+    light_green)
+      printf "\e[102m"
+    ;;
+    light_yellow)
+      printf "\e[103m"
+    ;;
+    light_purple)
+      printf "\e[104m"
+    ;;
+    light_pink)
+      printf "\e[105m"
+    ;;
+    light_teal)
+      printf "\e[106m"
+    ;;
+    light_gray | light_grey)
+      printf "\e[107m"
     ;;
     *)
       printf "\e[49m"
