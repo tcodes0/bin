@@ -1,15 +1,10 @@
+#! /usr/bin/env bash
   source $HOME/bin/optar.sh || bailout "optar.sh not found."
   parse-options "$@"
 
-  # for debuging
-  if [[ "$1" == "-x" ]]; then
-    set -x
-    shift
-  fi
-
   if [[ -n $h ]] || [[ -n $help ]]; then
-    precho "example: color --yellow --bold foobar \
-    \nresult: \e[33;1mfoobar\e[0;34;49m \n\
+    printf "\e[94;100musage: color --yellow --bold foobar \
+    \nresult: \e[33;1;49mfoobar\e[0;94;100m \n\
     \ncolors:\n\
     --black\t --purple \n\
     --red\t --pink \n\
@@ -27,7 +22,7 @@
     \nbackgrounds: \n\
     --bg=white\t --bg=black\t --bg=light-black \n\
     \nto see all possible formats try:\n\
-    format-dump.sh\t format-dump.sh -a"
+    format-dump.sh\t format-dump.sh -a\e[0m\n"
     exit
   fi
 
