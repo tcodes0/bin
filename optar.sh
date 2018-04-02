@@ -50,8 +50,7 @@ for arg in "$@"; do
     if [[ "$arg" =~ ^--[[:alnum:]][[:alnum:]]+= ]]; then
       # split long from arg. Ann=choco makes export ann=choco
       export ${long%=*}="${long#*=}"
-      longs+=(${long%=*})
-      optsWithArgs+=(${long%=*})
+      longsWithArgs+=(${long%=*})
     else
       #no arg, just push
       longs+=($long)
@@ -69,8 +68,7 @@ for arg in "$@"; do
       if [[ $i == $((${#arg} - 1)) ]] && [[ $(eval echo \$$((argn + 1))) =~ ^[[:alnum:]] ]]; then
         # then it must be the last short's argument
         export $short=$(eval echo \$$((argn + 1)))
-        optsWithArgs+=($short)
-        shorts+=($short)
+        shortsWithArgs+=($short)
         # set flag to avoid processing next arg again
         alreadyProcessedNext=" "
       else
@@ -87,7 +85,7 @@ for arg in "$@"; do
 
 done
 
-# export everything as vars for visibility
+# export everything not already exported as vars for visibility
 for short in ${shorts[@]}; do
   export $short=" "
 done
@@ -101,12 +99,18 @@ get-shorts() {
   for short in ${shorts[@]}; do
     printf $short" "
   done
+  for short in ${shortsWithArgs[@]}; do
+    printf $short"* "
+  done
   printf "\n"
 }
 
 get-longs() {
   for long in ${longs[@]}; do
     printf $long" "
+  done
+  for long in ${longsWithArgs[@]}; do
+    printf $long"* "
   done
   printf "\n"
 }
@@ -119,8 +123,11 @@ get-arguments() {
 }
 
 get-optionsWithArgs() {
-  for opt in ${optsWithArgs[@]}; do
-    printf $opt" "
+  for opt in ${shortsWithArgs[@]}; do
+    printf $opt"* "
+  done
+  for opt in ${longsWithArgs[@]}; do
+    printf $opt"* "
   done
   printf "\n"
 }
