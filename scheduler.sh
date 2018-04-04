@@ -82,24 +82,24 @@ case $1 in
   ;;
   --check)
   if [ -f "$lock_file" ]; then
-    precho -d "locked: already running"
+    precho "locked: already running"
     exit 11
   fi
   #temporary fix for multiple instances of command on terminal resume
   if [ "$(tty | sed -e "s:/dev/::")" != "ttys000" ]; then
-    precho -d "not ttys000"
+    precho "not ttys000"
     exit 12
   fi
   #check if today is not a bkp day. Bkp days are saturday (6) thursday (4) and tuesday (2), respectively.
   if [ "$todays_weekday" != "6" ] && [ "$todays_weekday" != "4" ] && [ "$todays_weekday" != "2" ]; then
-    precho -d "not a backup day"
+    precho "not a backup day"
     exit 13
   else
     #check if a previous run left a file telling the run's day.
     if [ -f "$record_file" ]; then
       while read recorded_weekday; do
         if [ "$recorded_weekday" == "$todays_weekday" ]; then
-          precho -d "already run today"
+          precho "already run today"
           exit 14
         else
           should_run='true'
