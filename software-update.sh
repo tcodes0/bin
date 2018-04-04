@@ -1,7 +1,8 @@
-#! /bin/bash
+#! /usr/bin/env bash
 if [[ $HOME/bin/progress.sh ]]; then . $HOME/bin/progress.sh; fi
+
 work(){
-  progress start "Upgrading all homebrew apps (and casks)"
+  progress start "Upgrading homebrew"
     (brew upgrade 1>/dev/null 2>&1
     brew cask upgrade 1>/dev/null)
     progress finish "$?"
@@ -17,6 +18,7 @@ work(){
   /usr/local/bin/gem update 1>/dev/null
     progress finish "$?"
 }
+
 case "$1" in
   --dont-ask | -f)
   work
@@ -24,7 +26,7 @@ case "$1" in
   ;;
 esac
 #confirm upgrade
-precho "Upgrade all homebrew apps, casks and gems now? (y/n)"
+precho "Upgrade all cli-software now? (y/n)"
 precho "...defaulting to no in 5s"
 read -t 5
 if [ "$?" != 0 ]; then
