@@ -7,8 +7,9 @@ parse-options() {
 
 # for debuging
 if [[ "$1" == "--debug" ]]; then
-  set -x
   shift
+  printf "\n\e[4;33m$(printf %${COLUMNS}s) $(center DEBUGGING ${FUNCNAME[0]}!)$(printf %${COLUMNS}s)\e[0m\n"
+  set -x
 fi
 
 if [[ "$#" == 0 ]]; then

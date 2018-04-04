@@ -2,6 +2,8 @@
   source $HOME/bin/optar.sh || bailout "optar.sh not found."
   parse-options "$@"
 
+  maybeDebug
+
   if [[ -n $h ]] || [[ -n $help ]]; then
     printf "\e[1;36m♦︎ usage: color --yellow --bold foobar \
     \n  result: \e[33;1;49mfoobar\e[1;36m \n\
