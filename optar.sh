@@ -5,17 +5,20 @@ parse-options() {
 #returns - arrays with parsed data and boolean opts set as vars
 #shorts take no arguments, to give args to an option use a --long=with_equals
 
-# for debuging
 if [[ "$1" == "--debug" ]]; then
-  shift
   printf "\n\e[4;33m$(printf %${COLUMNS}s) $(center DEBUGGING ${FUNCNAME[0]}!)$(printf %${COLUMNS}s)\e[0m\n"
   set -x
 fi
 
 if [[ "$#" == 0 ]]; then
-  precho "input: string containing shorts (-s) longs (--longs) and params"
-  precho "output: arrays with parsed data and boolean opts set as vars"
   return
+fi
+
+# Opts we may have inherited from a parent function also using parse-options. Unset to void collisions.
+if [ "$allOptsSet" ]; then
+  for opt in ${allOptsSet[@]}; do
+    unset $opt
+  done
 fi
 
 local argn
@@ -101,33 +104,40 @@ done
 for long in ${longs[@]}; do
   export $long=" "
 done
+
+export allOptsSet="$(get-shorts)$(get-longs)"
 }
 
 get-shorts() {
-  for short in ${shorts[@]}; do
-    echo -ne "$short "
-  done
-  for short in ${shortsWithArgs[@]}; do
-    echo -ne "${short}* "
-  done
-  printf "\n"
+  if [ "$shorts" ]; then
+    for short in ${shorts[@]}; do
+      echo -ne "$short "
+    done
+  fi
+  if [ "$shortsWithArgs" ]; then
+    for short in ${shortsWithArgs[@]}; do
+      echo -ne "${short}* "
+    done
+  fi
 }
 
 get-longs() {
-  for long in ${longs[@]}; do
-    echo -ne "$long "
-  done
-  for long in ${longsWithArgs[@]}; do
-    echo -ne "${long}* "
-  done
-  printf "\n"
+  if [ "$longs" ]; then
+    for long in ${longs[@]}; do
+      echo -ne "$long "
+    done
+  fi
+  if [ "$longsWithArgs" ]; then
+    for long in ${longsWithArgs[@]}; do
+      echo -ne "${long}* "
+    done
+  fi
 }
 
 get-arguments() {
   for arg in ${arguments[@]}; do
     echo -ne "$arg "
   done
-  printf "\n"
 }
 
 get-optionsWithArgs() {
