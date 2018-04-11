@@ -1,29 +1,45 @@
 #! /usr/bin/env bash
-if [[ "$@" =~ -h ]]; then
-  precho this utility:
-  precho "post processes css using >post-css"
-  precho "transpiles JS with >npm run build"
-  precho "moves files to ./public"
-  precho "kills sourceMappingURLs on css files"
-  precho "and optionally calls publish-rsync, which:"
-  publish-rsync -h
+source "$HOME/bin/optar.sh" || bailout "Dependency failed"
+
+parse-options "$@"
+maybeDebug
+
+if [[ "$h" ]]; then
+  precho "this utility:\n\
+  post processes css using post-css\n\
+  transpiles JS with npm run build\n\
+  moves files to ./public\n\
+  kills sourceMappingURLs on css files\n\
+  options (passed to upload-rsync too):\n\
+  --dry-run\n\
+  and calls publish-rsync, which:"
+  printf "\n"
+  upload-rsync.sh -h
   exit
 fi
+
 if [[ ! "$(dirname $PWD)" =~ ^/Users/vamac/Code ]]; then   # Don't run outside ~/Code
   bailout "Can't run publish outside $(echo ~/Code)"
 fi
+
+case " " in
+  "$dry_run")
+    DRY="echo"
+  ;;
+esac
+
 if [ ! -d ${PWD}/public ]; then
-  color --bold --yellow "♦︎ No ./public dir found, creating it for you..."
-  mkdir ./public || bailout "Failed to make dir ./public"
+  precho -w "No ./public dir found, creating it for you..."
+  $DRY mkdir ./public || bailout "Failed to make dir ./public"
 fi
-post-css && color --bold --green "✔ Post-processed CSS"
-npm run build 1>/dev/null && color --bold --green "✔ Transpiled JS"
-(\cp -R ./*.html ./public # the backlash \ on \cp avoids any aliases called "cp"
-# \cp -R ./js ./public
-\cp -R ./css/img ./public/css
-\cp -R ./LICENSE* ./public
-\cp -R ./*json ./public) && color --bold --green "✔ Moved project files to ./public"
+$DRY post-css && precho -k "Post-processed CSS"
+$DRY npm run build 1>/dev/null && precho -k "Transpiled JS"
+($DRY \cp -R ./*.html ./public # the backlash \ on \cp avoids any aliases called "cp"
+# $DRY \cp -R ./js ./public
+$DRY \cp -R ./css/img ./public/css
+$DRY \cp -R ./LICENSE* ./public
+$DRY \cp -R ./*json ./public) && precho -k "Moved project files to ./public"
 for file in ./public/css/*.css; do
-  gsed --in-place --regexp-extended --expression='/[/][*]# sourceMappingURL.*[*][/]/d' $file
-done && color --bold --green "✔ Killed sourcemapping lines in css files on ./public/css/"
-publish-rsync "$@"
+  $DRY gsed --in-place --regexp-extended --expression='/[/][*]# sourceMappingURL.*[*][/]/d' $file
+done && precho -k "Killed sourcemapping lines in css files on ./public/css/"
+upload-rsync.sh "$@"
