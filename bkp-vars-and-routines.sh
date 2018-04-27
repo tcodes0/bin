@@ -87,11 +87,11 @@ do-print(){
 }
 
 do-help(){
-  precho "bkp.sh ➡ personal backup script\n\
-  -p, --print\t prints all files and folders with their bkp location\n\
-  -h, --help\t see this message\n\
-  -v\t\t verbose\n\
-  no args\t run"
+  precho "bkp.sh ➡ personal backup script
+  \n -p, --print \t prints all files and folders with their bkp location
+  \n -h, --help  \t see this message
+  \n -v        \t\t verbose
+  \n no args     \t run"
 }
 
 now-running () {
