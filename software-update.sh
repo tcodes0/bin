@@ -26,8 +26,8 @@ case "$1" in
   ;;
 esac
 #confirm upgrade
-precho "Upgrade all cli-software now? (y/n)"
-precho "...defaulting to no in 5s"
+precho "Upgrade all cli-software now? (y/n)
+\n ...defaulting to no in 5s"
 read -t 5
 if [ "$?" != 0 ]; then
   exit 1

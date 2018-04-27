@@ -122,20 +122,22 @@ case $1 in
   fi
   ;;
   *)
-  echo "scheduler: run a command in certain weekdays"
-  echo "--record    save todays weekday in a record file"
-  echo "--check     check the weekday and execute the command if appropriate"
-  echo "--reset     delete record file"
-  echo "--lock      create lock file to prevent multiple instances"
-  echo "--unlock    remove lock file"
-  echo "current command: $command"
-  echo "backup days are saturday (6) thursday (4) and tuesday (2), respectively"
-  printf "\n"
-  echo "exit statuses"
-  echo "11	already running ($lock_file is present)"
-  echo "12	not ttys000"
-  echo "13	not a backup day"
-  echo "14	already run today"
+  precho "scheduler: run a command in certain weekdays
+  \n
+  \n --record \t save todays weekday in a record file
+  \n --check  \t check the weekday and execute the command if appropriate
+  \n --reset  \t delete record file
+  \n --lock   \t create lock file to prevent multiple instances
+  \n --unlock \t remove lock file
+  \n
+  \n current command: $command
+  \n backup days are saturday (6) thursday (4) and tuesday (2), respectively
+  \n
+  \n exit statuses:
+  \n 11	\t already running ($lock_file is present)
+  \n 12 \t not ttys000
+  \n 13 \t not a backup day
+  \n 14 \t already run today"
   exit 0
   ;;
 esac
