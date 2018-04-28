@@ -1,9 +1,12 @@
 #/usr/bin/env bash
 
 parse-options() {
-#input - string containing shorts (-s) longs (--longs) and params
-#returns - arrays with parsed data and boolean opts set as vars
-#shorts take no arguments, to give args to an option use a --long=with_equals
+#input   - string containing shorts (-s), longs (--longs), and arguments
+#returns - arrays with parsed data and opts set as vars
+#exports a var for each option. (-s => $s, --foo => $foo, --long-opt => $long_opt)
+#"-" are translated into "_"
+#"--" signals the end of options
+#shorts take no arguments, to give args to an option use a --long=arg
 
 if [[ "$1" == "--debug" ]]; then
   printf "\n\e[4;33m$(printf %${COLUMNS}s) $(center DEBUGGING ${FUNCNAME[0]}!)$(printf %${COLUMNS}s)\e[0m\n"
@@ -15,8 +18,8 @@ if [[ "$#" == 0 ]]; then
 fi
 
 # Opts we may have inherited from a parent function also using parse-options. Unset to void collisions.
-if [ "$allOptsSet" ]; then
-  for opt in ${allOptsSet[@]}; do
+if [ "$allOptions" ]; then
+  for opt in ${allOptions[@]}; do
     unset $opt
   done
 fi
@@ -27,19 +30,19 @@ local short
 local alreadyProcessedNext
 local noMoreOptions
 
-#repeat until no args left
-for arg in "$@"; do
+#echo to split args space separated, #repeat until no args left
+for arg in $(echo "$@"); do
   argn=$(($argn + 1))
 
   # if flag set
-  if [[ -n $alreadyProcessedNext ]]; then
+  if [[ "$alreadyProcessedNext" ]]; then
     # unset flag, skip this arg.
     alreadyProcessedNext=""
     continue
   fi
 
   # if flag set
-  if [[ -n $noMoreOptions ]]; then
+  if [[ "$noMoreOptions" ]]; then
     #end of options seen, just push remaining args
     arguments+=($arg)
     continue
@@ -48,18 +51,19 @@ for arg in "$@"; do
   # if end of options is seen
   if [[ "$arg" =~ ^--$ ]]; then
     # set flag to stop parsing
-    noMoreOptions=" "
+    noMoreOptions="true"
     continue
   fi
 
   # if long
   if [[ "$arg" =~ ^--[[:alnum:]] ]]; then
-    long=${arg:2} #start on char 2, skip leading --
+    #start on char 2, skip leading --
+    long=${arg:2}
     # substitute any - with _
     long=${long/-/_}
-    # if arg has an =, it means it has an arg
+    # if opt has an =, it means it has an arg
     if [[ "$arg" =~ ^--[[:alnum:]][[:alnum:]]+= ]]; then
-      # split long from arg. Ann=choco makes export ann=choco
+      # split opt from arg. Ann=choco makes export ann=choco
       export ${long%=*}="${long#*=}"
       longsWithArgs+=(${long%=*})
     else
@@ -81,7 +85,7 @@ for arg in "$@"; do
       #   export $short=$(eval echo \$$((argn + 1)))
       #   shortsWithArgs+=($short)
       #   # set flag to avoid processing next arg again
-      #   alreadyProcessedNext=" "
+      #   alreadyProcessedNext="true"
       # else
       #   #no arg, just push
         shorts+=($short)
@@ -96,16 +100,16 @@ for arg in "$@"; do
 
 done
 
-# export everything not already exported as vars for visibility
+# give opts with no arguments value "true"
 for short in ${shorts[@]}; do
-  export $short=" "
+  export $short="true"
 done
 
 for long in ${longs[@]}; do
-  export $long=" "
+  export $long="true"
 done
 
-export allOptsSet="$(get-shorts)$(get-longs)"
+export allOptions="$(get-shorts)$(get-longs)"
 }
 
 get-shorts() {
