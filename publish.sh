@@ -27,7 +27,7 @@ if [[ ! "$(dirname $PWD)" =~ ^/Users/vamac/Code ]]; then   # Don't run outside ~
   bailout "Can't run publish outside $(echo ~/Code)"
 fi
 
-case " " in
+case "true" in
   "$dry_run")
     DRY="echo"
   ;;

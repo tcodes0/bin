@@ -4,78 +4,78 @@
 
   maybeDebug
 
-  if [[ -n $h ]] || [[ -n $help ]]; then
-    printf "\e[1;36m♦︎ usage: color --yellow --bold foobar \
-    \n  result: \e[33;1;49mfoobar\e[1;36m \n\
-    \n  colors:\n\
-    --black\t --purple \n\
-    --red\t --pink \n\
-    --green\t --teal \n\
-    --yellow\t --grey \n\
-    --white \n\
-    --light-black\t --light-purple \n\
-    --light-red  \t --light-pink \n\
-    --light-green\t --light-teal \n\
-    --light-yellow\t --light-grey \n\
-    \n  styles: \n\
-    --bold\t --underline \n\
-    --dim\t --blink \n\
-    --box \n\
-    \n  backgrounds: \n\
-    --bg=white\t --bg=black\t --bg=light-black \n\
-    \n  to see all possible formats try:\n\
-    format-dump.sh\t format-dump.sh -a\e[0m\n"
+  if [ "$h" -o "$help" ]; then
+    echo -e "\e[1;36m♦︎ usage: color --yellow --bold foobar\
+    \n  result: \e[33;1;49mfoobar\e[1;36m
+    \n  colors
+    --black\t --purple
+    --red\t --pink
+    --green\t --teal
+    --yellow\t --grey
+    --white
+    --light-black\t --light-purple
+    --light-red  \t --light-pink
+    --light-green\t --light-teal
+    --light-yellow\t --light-grey
+    \n  styles:
+    --bold\t --underline
+    --dim\t --blink
+    --box
+    \n  backgrounds:
+    --bg=white\t --bg=black\t --bg=light-black
+    \n  to see all possible formats try
+    format-dump.sh\t format-dump.sh -a\e[0m"
     exit
   fi
 
   # styles
-  # only bold or white and bold prints yellow. Implementation quirk.
-  if [[ -n $bold ]]; then
+  # only (bold or white) and (bold) prints yellow. Implementation quirk.
+  if [ $bold ]; then
     printf "\e[1m"
-  elif [[ -n $dim ]]; then
+  elif [ $dim ]; then
     printf "\e[2m"
-  elif [[ -n $underline ]]; then
+  elif [ $underline ]; then
     printf "\e[4m"
-  elif [[ -n $blink ]]; then
+  elif [ $blink ]; then
     printf "\e[5m"
-  elif [[ -n $box ]]; then
+  elif [ $box ]; then
     printf "\e[7m"
   fi
 
   # foregrounds
-  if [[ -n $black ]]; then
+  if [ $black ]; then
     printf "\e[30m"
-  elif [[ -n $red ]]; then
+  elif [ $red ]; then
     printf "\e[31m"
-  elif [[ -n $green ]]; then
+  elif [ $green ]; then
     printf "\e[32m"
-  elif [[ -n $yellow ]]; then
+  elif [ $yellow ]; then
     printf "\e[33m"
-  elif [[ -n $purple ]]; then
+  elif [ $purple ]; then
     printf "\e[34m"
-  elif [[ -n $pink ]]; then
+  elif [ $pink ]; then
     printf "\e[35m"
-  elif [[ -n $teal ]]; then
+  elif [ $teal ]; then
     printf "\e[36m"
-  elif [[ -n $gray ]] || [[ -n $grey ]]; then
+  elif [ "$gray" -o "$grey" ]; then
     printf "\e[37m"
-  elif [[ -n $white ]]; then
+  elif [ $white ]; then
     printf "\e[39m"
-  elif [[ -n $light_black ]]; then
+  elif [ $light_black ]; then
     printf "\e[90m"
-  elif [[ -n $light_red ]]; then
+  elif [ $light_red ]; then
     printf "\e[91m"
-  elif [[ -n $light_green ]]; then
+  elif [ $light_green ]; then
     printf "\e[92m"
-  elif [[ -n $light_yellow ]]; then
+  elif [ $light_yellow ]; then
     printf "\e[93m"
-  elif [[ -n $light_purple ]]; then
+  elif [ $light_purple ]; then
     printf "\e[94m"
-  elif [[ -n $light_pink ]]; then
+  elif [ $light_pink ]; then
     printf "\e[95m"
-  elif [[ -n $light_teal ]]; then
+  elif [ $light_teal ]; then
     printf "\e[96m"
-  elif [[ -n $light_gray ]] || [[ -n $light_grey ]]; then
+  elif [ "$light_gray" -o "$light_grey" ]; then
     printf "\e[97m"
   fi
 

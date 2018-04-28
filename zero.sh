@@ -5,16 +5,16 @@ parse-options "$@"
 maybeDebug
 
 if [[ "$h" ]]; then
-  precho "bla\n\
-    -o\t\t bla\n\
-    -o\t\t bla\n\
-    -o\t\t bla\n\
-    --opt\t bla\n\
-    --opt\t bla"
+  precho "bla
+  -o     bla
+  -o     bla
+  -o     bla
+  --opt  bla
+  --opt  bla"
   exit
 fi
 
-case " " in
+case "true" in
   "$y")
     REPLY="yes"
   ;;&
