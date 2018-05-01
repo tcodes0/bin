@@ -1,10 +1,10 @@
 #/usr/bin/env bash
 
 parse-options() {
-#input   - string containing shorts (-s), longs (--longs), and arguments
+#input   - $@ or string containing shorts (-s), longs (--longs), and arguments
 #returns - arrays with parsed data and opts set as vars
 #exports a var for each option. (-s => $s, --foo => $foo, --long-opt => $long_opt)
-#"-" are translated into "_"
+#"-" are translated i(nto "_"
 #"--" signals the end of options
 #shorts take no arguments, to give args to an option use a --long=arg
 
@@ -24,22 +24,11 @@ if [ "$allOptions" ]; then
   done
 fi
 
-local argn
-local long
-local short
-local alreadyProcessedNext
-local noMoreOptions
+local argn long short noMoreOptions
 
-#echo to split args space separated, #repeat until no args left
+#echo to split quoted args, repeat until no args left
 for arg in $(echo "$@"); do
   argn=$(($argn + 1))
-
-  # if flag set
-  if [[ "$alreadyProcessedNext" ]]; then
-    # unset flag, skip this arg.
-    alreadyProcessedNext=""
-    continue
-  fi
 
   # if flag set
   if [[ "$noMoreOptions" ]]; then
@@ -79,17 +68,7 @@ for arg in $(echo "$@"); do
     # since shorts can be chained (-gpH), look at one char at a time
     while [ $i != ${#arg} ]; do
       short=${arg:$i:1}
-      # # if this is the last short in the chain AND the next arg has no leading - or --
-      # if [[ $i == $((${#arg} - 1)) ]] && [[ $(eval echo \$$((argn + 1))) =~ ^[[:alnum:]] ]]; then
-      #   # then it must be the last short's argument
-      #   export $short=$(eval echo \$$((argn + 1)))
-      #   shortsWithArgs+=($short)
-      #   # set flag to avoid processing next arg again
-      #   alreadyProcessedNext="true"
-      # else
-      #   #no arg, just push
         shorts+=($short)
-      # fi
       i=$((i + 1))
     done
     continue
@@ -97,7 +76,6 @@ for arg in $(echo "$@"); do
 
   # not a long or short, push as an arg
   arguments+=($arg)
-
 done
 
 # give opts with no arguments value "true"
@@ -112,19 +90,16 @@ done
 export allOptions="$(get-shorts)$(get-longs)"
 }
 
+#part of parse-options
 get-shorts() {
   if [ "$shorts" ]; then
     for short in ${shorts[@]}; do
       echo -ne "$short "
     done
   fi
-  if [ "$shortsWithArgs" ]; then
-    for short in ${shortsWithArgs[@]}; do
-      echo -ne "${short}* "
-    done
-  fi
 }
 
+#part of parse-options
 get-longs() {
   if [ "$longs" ]; then
     for long in ${longs[@]}; do
@@ -138,6 +113,7 @@ get-longs() {
   fi
 }
 
+#part of parse-options
 get-arguments() {
   for arg in ${arguments[@]}; do
     echo -ne "$arg "
