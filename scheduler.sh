@@ -32,7 +32,7 @@ scheduler-reset () {
     verbose="true"
     shift
   fi
-  if ! [ -f "$record_file" ]; then
+  if [ -f "$record_file" ]; then
     trash "$record_file" || bailout
     if [ "$verbose" == "true" ]; then
       precho "record file removed"
@@ -123,21 +123,21 @@ case $1 in
   ;;
   *)
   precho "scheduler: run a command in certain weekdays
-  \n
-  \n --record \t save todays weekday in a record file
-  \n --check  \t check the weekday and execute the command if appropriate
-  \n --reset  \t delete record file
-  \n --lock   \t create lock file to prevent multiple instances
-  \n --unlock \t remove lock file
-  \n
-  \n current command: $command
-  \n backup days are saturday (6) thursday (4) and tuesday (2), respectively
-  \n
-  \n exit statuses:
-  \n 11	\t already running ($lock_file is present)
-  \n 12 \t not ttys000
-  \n 13 \t not a backup day
-  \n 14 \t already run today"
+
+  --record \t save todays weekday in a record file
+  --check  \t check the weekday and execute the command if appropriate
+  --reset  \t delete record file
+  --lock   \t create lock file to prevent multiple instances
+  --unlock \t remove lock file
+
+  current command: $command
+  backup days are saturday (6) thursday (4) and tuesday (2), respectively
+
+  exit statuses:
+  11 \t already running ($lock_file is present)
+  12 \t not ttys000
+  13 \t not a backup day
+  14 \t already run today"
   exit 0
   ;;
 esac
