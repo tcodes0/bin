@@ -71,54 +71,60 @@ run-command-with-lock () {
   fi
 }
 
-#======================================== MAIN
-
-case $1 in
-  --record)
-  echo $todays_weekday > $record_file || bailout
-  exit 0
-  ;;
-  --lock)
-  scheduler-lock -v
-  exit 0
-  ;;
-  --unlock)
-  scheduler-unlock -v
-  exit 0
-  ;;
-  --check)
+scheduler-check() {
   if [ -f "$lock_file" ]; then
     precho "locked: already running"
     exit 11
   fi
-    #check if a previous run left a file telling the run's day.
-    if [ -f "$record_file" ]; then
-      while read recorded_weekday; do
-        if [ "$recorded_weekday" == "$todays_weekday" ]; then
-          precho "already run today"
-          exit 14
-        elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
-          [ "$recorded_weekday" == '6' -a "$todays_weekday" == '0' ]; then
-          precho "run yesterday"
-          exit 12
-        else
-          run-command-with-lock
-        fi
-      done < "$record_file"
-    else
-      run-command-with-lock
-    fi
+
+  #check if a previous run left a file telling the run's day.
+  if [ -f "$record_file" ]; then
+    while read recorded_weekday; do
+      if [ "$recorded_weekday" == "$todays_weekday" ]; then
+        precho "already run today"
+        exit 14
+
+      elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
+      [ "$recorded_weekday" == '6' -a "$todays_weekday" == '0' ]; then
+        precho "run yesterday"
+        exit 12
+
+      else
+        run-command-with-lock
+      fi
+    done < "$record_file"
+  else
+    run-command-with-lock
+  fi
+}
+#======================================== MAIN
+
+case $1 in
+  --record)
+    echo $todays_weekday > $record_file || bailout
+    exit 0
+  ;;
+  --lock)
+    scheduler-lock -v
+    exit 0
+  ;;
+  --unlock)
+    scheduler-unlock -v
+    exit 0
+  ;;
+  --check)
+    scheduler-check
   ;;
   --reset)
-  if [ -f "$record_file" ]; then
-    scheduler-reset -v
-  else
-    precho "no record file to remove"
-    exit 1
-  fi
+    if [ -f "$record_file" ]; then
+      scheduler-reset -v
+    else
+      precho "no record file to remove"
+      exit 1
+    fi
   ;;
   *)
-  precho "scheduler: run a command in certain weekdays
+    precho "scheduler: run a command every other day
 
   --record \t save todays weekday in a record file
   --check  \t check the weekday and execute the command if appropriate
@@ -127,13 +133,11 @@ case $1 in
   --unlock \t remove lock file
 
   current command: $command
-  backup days are saturday (6) thursday (4) and tuesday (2), respectively
 
   exit statuses:
   11 \t already running ($lock_file is present)
   12 \t run yesterday
-  13 \t not a backup day
-  14 \t already run today"
-  exit 0
+    14 \t already run today"
+    exit 0
   ;;
 esac
