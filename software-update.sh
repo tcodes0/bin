@@ -12,9 +12,10 @@ work(){
     brew cask cleanup 1>/dev/null)
     progress finish "$?"
 
-  progress start "Updating NPM global packages"
-    (npm update -g 1>/dev/null 2>&1
-    npm install -g caniuse)
+  progress start "Updating some NPM packages"
+  # progress start "Updating NPM global packages"
+    # (npm update -g 1>/dev/null 2>&1
+    npm install -g caniuse
     progress finish "$?"
 
   progress start "Updating gems"
@@ -32,7 +33,7 @@ esac
 
 #confirm upgrade
 precho "Upgrade all cli-software now? (y/n)
-\n ...defaulting to no in 5s"
+   ...defaulting to no in 5s"
 read -t 5
 
 if [ "$?" != 0 ]; then
