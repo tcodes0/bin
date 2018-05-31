@@ -79,20 +79,24 @@ scheduler-check() {
 
   #check if a previous run left a file telling the run's day.
   if [ -f "$record_file" ]; then
-    while read recorded_weekday; do
-      if [ "$recorded_weekday" == "$todays_weekday" ]; then
-        precho "already run today"
-        exit 14
+    local recorded_weekday
 
-      elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
-      [ "$recorded_weekday" == '6' -a "$todays_weekday" == '0' ]; then
-        precho "run yesterday"
-        exit 12
-
-      else
-        run-command-with-lock
-      fi
+    while read rd; do
+      recorded_weekday=$rd
     done < "$record_file"
+
+    if [ "$recorded_weekday" == "$todays_weekday" ]; then
+      precho "already run today"
+      exit 14
+
+    elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
+    [ "$recorded_weekday" == '6' -a "$todays_weekday" == '0' ]; then
+      precho "run yesterday"
+      exit 12
+
+    else
+      run-command-with-lock
+    fi
   else
     run-command-with-lock
   fi
