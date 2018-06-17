@@ -170,7 +170,7 @@ ziplist() {
   progress start "Zipping and copying files"
   echo "-> $(date +"%b %d %T ")ziplist - tar7zing files using paralol..." >> "$LOGPATH"
   for file in "${!ZIPTHIS[@]}"; do
-    paralolBg tar7z "$file"
+    paralolDo tar7z "$file"
   done
   paralolWait || bailout
   echo "-> $(date +"%b %d %T ")Rsyncing zipped files..."			            >> "$LOGPATH"
