@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-#======================================== vars
+#======================================== VARS
 #weekdays	num	bkp?
 #sunday   0 	no
 #mon      1 	no
@@ -12,8 +12,9 @@ todays_weekday=$(date +"%w")
 record_file=~/.scheduler-last-run-date
 lock_file=~/.scheduler-lock
 command="$HOME/bin/bkp.sh"
-should_run=''
-#======================================== functions
+
+#======================================== FUNCTIONS
+
 scheduler-lock () {
   if [ "$1" == "-v" ]; then
     verbose="true"
@@ -27,6 +28,7 @@ scheduler-lock () {
     return
   fi
 }
+
 scheduler-reset () {
   if [ "$1" == "-v" ]; then
     verbose="true"
@@ -40,6 +42,7 @@ scheduler-reset () {
     return
   fi
 }
+
 scheduler-unlock () {
   if [ "$1" == "-v" ]; then
     verbose="true"
@@ -53,6 +56,7 @@ scheduler-unlock () {
     return
   fi
 }
+
 run-command-with-lock () {
   precho "Run $(basename $command) now? (y/n)"
   precho "...defaulting to no in 6s"
@@ -66,63 +70,65 @@ run-command-with-lock () {
     scheduler-unlock
   fi
 }
-#======================================== main
-case $1 in
-  --record)
-  echo $todays_weekday > $record_file || bailout
-  exit 0
-  ;;
-  --lock)
-  scheduler-lock -v
-  exit 0
-  ;;
-  --unlock)
-  scheduler-unlock -v
-  exit 0
-  ;;
-  --check)
+
+scheduler-check() {
   if [ -f "$lock_file" ]; then
     precho "locked: already running"
     exit 11
   fi
-  #temporary fix for multiple instances of command on terminal resume
-  if [ "$(tty | sed -e "s:/dev/::")" != "ttys000" ]; then
-    precho "not ttys000"
-    exit 12
-  fi
-  #check if today is not a bkp day. Bkp days are saturday (6) thursday (4) and tuesday (2), respectively.
-  if [ "$todays_weekday" != "6" ] && [ "$todays_weekday" != "4" ] && [ "$todays_weekday" != "2" ]; then
-    precho "not a backup day"
-    exit 13
-  else
-    #check if a previous run left a file telling the run's day.
-    if [ -f "$record_file" ]; then
-      while read recorded_weekday; do
-        if [ "$recorded_weekday" == "$todays_weekday" ]; then
-          precho "already run today"
-          exit 14
-        else
-          should_run='true'
-        fi
-      done < "$record_file"
+
+  #check if a previous run left a file telling the run's day.
+  if [ -f "$record_file" ]; then
+    local recorded_weekday
+
+    while read rd; do
+      recorded_weekday=$rd
+    done < "$record_file"
+
+    if [ "$recorded_weekday" == "$todays_weekday" ]; then
+      precho "already run today"
+      exit 14
+
+    elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
+    [ "$recorded_weekday" == '6' -a "$todays_weekday" == '0' ]; then
+      precho "run yesterday"
+      exit 12
+
     else
       run-command-with-lock
     fi
-    if [[ "$should_run" != '' ]]; then
-      run-command-with-lock
-    fi
+  else
+    run-command-with-lock
   fi
+}
+#======================================== MAIN
+
+case $1 in
+  --record)
+    echo $todays_weekday > $record_file || bailout
+    exit 0
+  ;;
+  --lock)
+    scheduler-lock -v
+    exit 0
+  ;;
+  --unlock)
+    scheduler-unlock -v
+    exit 0
+  ;;
+  --check)
+    scheduler-check
   ;;
   --reset)
-  if [ -f "$record_file" ]; then
-    scheduler-reset -v
-  else
-    precho "no record file to remove"
-    exit 1
-  fi
+    if [ -f "$record_file" ]; then
+      scheduler-reset -v
+    else
+      precho "no record file to remove"
+      exit 1
+    fi
   ;;
   *)
-  precho "scheduler: run a command in certain weekdays
+    precho "scheduler: run a command every other day
 
   --record \t save todays weekday in a record file
   --check  \t check the weekday and execute the command if appropriate
@@ -131,13 +137,11 @@ case $1 in
   --unlock \t remove lock file
 
   current command: $command
-  backup days are saturday (6) thursday (4) and tuesday (2), respectively
 
   exit statuses:
   11 \t already running ($lock_file is present)
-  12 \t not ttys000
-  13 \t not a backup day
-  14 \t already run today"
-  exit 0
+  12 \t run yesterday
+    14 \t already run today"
+    exit 0
   ;;
 esac

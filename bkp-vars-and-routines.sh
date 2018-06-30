@@ -95,8 +95,8 @@ do-help(){
 }
 
 now-running () {
-  echo -e "\e[1;37m"
-  center --padding=-1 "💫 🖥 Running $(basename $0) 🖥 💫"
+  echo -e "${r256}"
+  echo -e "💫  🖥 \040Running $(basename $0) 🖥  💫"
   echo -e "\e[0m"
 }
 
@@ -170,7 +170,7 @@ ziplist() {
   progress start "Zipping and copying files"
   echo "-> $(date +"%b %d %T ")ziplist - tar7zing files using paralol..." >> "$LOGPATH"
   for file in "${!ZIPTHIS[@]}"; do
-    paralolBg tar7z "$file"
+    paralolDo tar7z "$file"
   done
   paralolWait || bailout
   echo "-> $(date +"%b %d %T ")Rsyncing zipped files..."			            >> "$LOGPATH"

@@ -12,10 +12,12 @@ work(){
     brew cask cleanup 1>/dev/null)
     progress finish "$?"
 
-  progress start "Updating some NPM packages"
-  # progress start "Updating NPM global packages"
-    # (npm update -g 1>/dev/null 2>&1
-    npm install -g caniuse
+  # progress print "Updating some NPM packages"
+  #   npm install -g caniuse
+  #   progress finish "$?"
+
+  progress print "Updating NPM global packages"
+    npm update -g #1>/dev/null 2>&1
     progress finish "$?"
 
   progress start "Updating gems"

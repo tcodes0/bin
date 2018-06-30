@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 paralolWait() {
+  if [ "$1" == "-v" ]; then
+    v="true"
+  fi
   #input - "pids" env array to get pids to check for exit
   local runningPids
   local pid
@@ -10,9 +13,10 @@ paralolWait() {
       break
     else
       # if not, some processes still need time, so let's wait
-      sleep 4
+      sleep 1
       # get all processes running, substitute \n with spaces.
-      runningPids="$(ps -T -o pid | tr \\n \\040)"
+      runningPids="$(ps -T -o pid="")"
+      runningNames="$(ps -T -o command="")"
       # check every process we created
       for i in "${!pids[@]}"; do
         pid=${pids[$i]}
@@ -30,7 +34,7 @@ paralolWait() {
     fi
   done
 }
-paralolBg() {
+paralolDo() {
   #input - task and params to send to bg
   #returns - pids put to bg as "pids" env array
   [ "$v" ] && echo -n "running in bg disowned: $@"
