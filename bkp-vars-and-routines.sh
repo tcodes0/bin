@@ -95,8 +95,8 @@ do-help(){
 }
 
 now-running () {
-  echo -e "\e[1;37m"
-  center --padding=-1 "💫 🖥 Running $(basename $0) 🖥 💫"
+  echo -e "${r256}"
+  echo -e "💫  🖥 \040Running $(basename $0) 🖥  💫"
   echo -e "\e[0m"
 }
 

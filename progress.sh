@@ -22,7 +22,7 @@ function _show() {
   SECONDS=0
   while :
 	do
-    printf "\r%${progress_pad_left}s%s%s%${time_padding}s\e[33m" '' "$progress_message" "$accumulated_runner" ''
+    printf "\r%0s%s%s%${time_padding}s\e[33m" '' "$progress_message" "$accumulated_runner" ''
     print_time $SECONDS
     printf "\e[0m"
     i=$((i + 1))
@@ -40,7 +40,7 @@ function _show() {
 
 function _print() {
   local time_padding=$(($progress_line_length-$progress_pad_left-${#progress_message}-${#accumulated_runner}-5))
-  printf "\r%${progress_pad_left}s%s%s%${time_padding}s\e[33m" '' "$progress_message" "$accumulated_runner" ''
+  printf "\r%0s%s%s%${time_padding}s\e[33m" '' "$progress_message" "$accumulated_runner" ''
   printf "     "
   printf "\e[0m"
 }
@@ -64,7 +64,8 @@ function progress() {
       ;;
     "finish")
       local line_length_minus_time=$((progress_line_length - 5))
-      printf "\r%${line_length_minus_time}s" ''
+      local time_padding=$(($progress_line_length-$progress_pad_left-${#progress_message}-${#accumulated_runner}-5))
+      printf "\r%${time_padding}s" ''
       if [ "${#progress_pid}" == "0" ]; then
         true
       else
@@ -75,14 +76,14 @@ function progress() {
         "0") #success
           #                             -1: \r, -2: ✔, -1: , -5: 00:00 (the time counter), +2: not sure
           # local time_padding=$(($progress_line_length-1-2-1-$progress_pad_left-${#progress_message}-5+2))
-          printf "\r%${progress_pad_left}s\e[32m✔ %s\e[0m\n" '' "$progress_message"
+          printf "\r%0s\e[32m✔ %s\e[0m\n" '' "$progress_message"
           # print_time $SECONDS
           ;;
         "1") #failure
-          printf "\r%${progress_pad_left}s\e[31m✘ %s\e[0m\n" '' "$progress_message"
+          printf "\r%0s\e[31m✘ %s\e[0m\n" '' "$progress_message"
           ;;
         "*") #other status, or no status passed
-          printf "\r%${progress_pad_left}s\e[33m● %s\e[0m\n" '' "$progress_message"
+          printf "\r%0s\e[33m● %s\e[0m\n" '' "$progress_message"
           ;;
       esac
       unset progress_speed progress_runner progress_message progress_pid progress_line_length progress_pad_left
@@ -96,7 +97,7 @@ function progress() {
       fi
       progress_line_length=$(tput cols)
       progress_pad_left=$(($progress_line_length-${#progress_message}-5))
-      printf "%${progress_pad_left}s\e[33;1m%s%s%s\e[0m\n" '' "$progress_message" "$(print_time $SECONDS)" "$progress_message2"
+      printf "%0s\e[33;1m%s%s%s\e[0m\n" '' "$progress_message" "$(print_time $SECONDS)" "$progress_message2"
       ;;
     "print")
       shift
