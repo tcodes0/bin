@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-if [[ $HOME/bin/progress.sh ]]; then . $HOME/bin/progress.sh; fi
+if [ $HOME/bin/progress.sh ]; then . $HOME/bin/progress.sh; fi
 
 work(){
   progress start "Upgrading homebrew"
