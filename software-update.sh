@@ -2,6 +2,8 @@
 if [ $HOME/bin/progress.sh ]; then . $HOME/bin/progress.sh; fi
 
 work(){
+  failSudo install
+
   progress start "Upgrading homebrew"
     (brew upgrade 1>/dev/null 2>&1
     brew cask upgrade 1>/dev/null)
@@ -24,6 +26,8 @@ work(){
     # /usr/bin/gem often conflicts. MacOS version is root - wheel, no write perm.
     /usr/local/bin/gem update 1>/dev/null
     progress finish "$?"
+
+  failSudo uninstall
 }
 
 case "$1" in
