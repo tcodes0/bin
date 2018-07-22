@@ -32,6 +32,7 @@ ziplist
 do-software
 do-brewfile
 do-mackup
+vscodeExtensionList
 
 progress total ~/.bkp-run-times
 scheduler.sh --record

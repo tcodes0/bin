@@ -158,9 +158,21 @@ safelist () {
 }
 
 applist() {
-  echo "-> $(date +"%b %d %T ")Applist rsync started"			          >> "$LOGPATH"
+  echo "-> $(date +"%b %d %T ")Applist started"			          >> "$LOGPATH"
   progress start "Saving a list of apps on /Applications"
   ls /Applications > "$BKPDIR/Bkp/_Mac/others/applist.txt" || bailout
+  progress finish "$?"
+  echo "_________________________________________________________"	>> "$LOGPATH"
+  printf "\n"    						                                        >> "$LOGPATH"
+}
+
+vscodeExtensionList() {
+  local file="$BKPDIR/Bkp/_Mac/others/vscodeExtensions.txt"
+
+  echo "-> $(date +"%b %d %T ")vscode extension list started"			          >> "$LOGPATH"
+  progress start "Saving a list of vscode extensions"
+  code --list-extensions > "$file" || bailout
+  echo >> "$file" || bailout
   progress finish "$?"
   echo "_________________________________________________________"	>> "$LOGPATH"
   printf "\n"    						                                        >> "$LOGPATH"
