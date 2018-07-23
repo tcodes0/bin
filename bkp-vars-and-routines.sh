@@ -8,9 +8,10 @@ declare ADDLOG="--log-file $LOGPATH"
 declare ADDDELETE="--delete --checksum"
 # declare LOGPATH="/dev/null"
 # declare ADDLOG=""
-declare RSYNC="rsync --recursive --update --inplace --no-relative"
+declare RSYNC="rsync --recursive --update --inplace --no-relative --exclude=node_modules/ --exclude=.vscode/extensions/"
 declare BKPDIR="/Volumes/Seagate"
 declare SAFECOPYDIR="/Volumes/Izi"
+declare GDRIVE="$HOME/Documents/GoogleDrive/Mackup"
 
 declare -A PATHS=(
 # DO end paths with a trailing slash/
@@ -44,7 +45,7 @@ declare -A ZIPTHIS=(
 #do NOT end file paths with a trailing slash/. It will zip contents ONLY and create a file named .tar.7z (hidden)
 #old ff path: "/Users/Shared/5e3ouofl.default"
 ["$HOME/Library/Application Support/Waterfox/Profiles/5e3ouofl.default"]="$BKPDIR/Bkp/Firefox/5e3ouofl.default.tar.7z"
-["/Volumes/Izi/bkp/vuzebkp"]="$BKPDIR/Bkp/_Mac/others/vuzebkp.tar.7z"
+# ["/Volumes/Izi/bkp/vuzebkp"]="$BKPDIR/Bkp/_Mac/others/vuzebkp.tar.7z"
 )
 
 ##--------------------  Functions --------------------##
@@ -94,10 +95,15 @@ do-help(){
   no args         run"
 }
 
-now-running () {
+start-run () {
   echo -e "${r256}"
   echo -e "💫  🖥 \040Running $(basename $0) 🖥  💫"
   echo -e "\e[0m"
+}
+
+finish-run () {
+  progress total ~/.bkp-run-times
+  scheduler.sh --record
 }
 
 pathlist () {
@@ -160,20 +166,20 @@ safelist () {
 applist() {
   echo "-> $(date +"%b %d %T ")Applist started"			          >> "$LOGPATH"
   progress start "Saving a list of apps on /Applications"
-  ls /Applications > "$BKPDIR/Bkp/_Mac/others/applist.txt" || bailout
+  ls /Applications > "$GDRIVE/plain-text/applist.txt" || bailout
   progress finish "$?"
   echo "_________________________________________________________"	>> "$LOGPATH"
   printf "\n"    						                                        >> "$LOGPATH"
 }
 
 vscodeExtensionList() {
-  local file="$BKPDIR/Bkp/_Mac/others/vscodeExtensions.txt"
+  local file="$GDRIVE/plain-text/vscodeExtensions.txt"
 
   echo "-> $(date +"%b %d %T ")vscode extension list started"			          >> "$LOGPATH"
-  progress start "Saving a list of vscode extensions"
+  # progress start "Saving a list of vscode extensions"
   code --list-extensions > "$file" || bailout
   echo >> "$file" || bailout
-  progress finish "$?"
+  # progress finish "$?"
   echo "_________________________________________________________"	>> "$LOGPATH"
   printf "\n"    						                                        >> "$LOGPATH"
 }

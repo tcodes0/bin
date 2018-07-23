@@ -1,9 +1,8 @@
 #! /usr/bin/env bash
 ##-----------------------  Deps & Setup  ----------------------##
-source "$HOME/bin/bkp-vars-and-routines.sh" || bailout "Dependency failed"
-source "$HOME/bin/optar.sh" || bailout "Dependency failed"
-source "$HOME/bin/progress.sh" || bailout "Dependency failed"
-source "$HOME/bin/paralol.sh" || bailout "Dependency failed"
+for name in bkp-vars-and-routines optar progress paralol; do
+  source "$HOME/bin/$name.sh" || bailout "Dependency $name failed"
+done
 
 parse-options "$@"
 maybeDebug
@@ -22,17 +21,17 @@ fi
 #-- Test for backup drive plugged in
 [ -d "$BKPDIR" ] || bailout "Backup destination not plugged in?"
 
+[[ "$(uname -s)" =~ Darwin ]] || bailout "Careful using this on Win/linux."
+
 ######----------------- Main  -----------------######
-now-running
+start-run
 pathlist
 safelist
 dellist
 applist
+vscodeExtensionList
 ziplist
 do-software
 do-brewfile
 do-mackup
-vscodeExtensionList
-
-progress total ~/.bkp-run-times
-scheduler.sh --record
+finish-run
