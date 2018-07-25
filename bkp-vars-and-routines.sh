@@ -176,10 +176,10 @@ vscodeExtensionList() {
   local file="$GDRIVE/plain-text/vscodeExtensions.txt"
 
   echo "-> $(date +"%b %d %T ")vscode extension list started"			          >> "$LOGPATH"
-  # progress start "Saving a list of vscode extensions"
+  progress start "Saving a list of vscode extensions"
   code --list-extensions > "$file" || bailout
   echo >> "$file" || bailout
-  # progress finish "$?"
+  progress finish "$?"
   echo "_________________________________________________________"	>> "$LOGPATH"
   printf "\n"    						                                        >> "$LOGPATH"
 }

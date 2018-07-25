@@ -30,7 +30,7 @@ safelist
 dellist
 applist
 vscodeExtensionList
-ziplist
+# ziplist #bugged: creating empty file
 do-software
 do-brewfile
 do-mackup
