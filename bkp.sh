@@ -1,6 +1,8 @@
 #! /usr/bin/env bash
+# shellcheck disable=SC2154
 ##-----------------------  Deps & Setup  ----------------------##
 for name in bkp-vars-and-routines optar progress paralol; do
+  # shellcheck disable=SC1090
   source "$HOME/bin/$name.sh" || bailout "Dependency $name failed"
 done
 
@@ -9,10 +11,10 @@ maybeDebug
 
 ######----------------- Quick exits  -----------------######
 if [[ "$#" != 0 ]]; then
-  if [ "$print" -o "$p" ]; then
+  if [ "$print" ] || [ "$p" ]; then
     do-print
     exit 0
-  elif [ "$help" -o "$h" ]; then
+  elif [ "$help" ] || [ "$h" ]; then
     do-help
     exit 1
   fi
