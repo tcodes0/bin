@@ -6,28 +6,27 @@ work() {
   [ "$1" == "silently" ] && local silently=">/dev/null 2>&1"
   set -e
 
-  progress start "Upgrading homebrew"
+  [ "$silently" ] && progress start "Upgrading homebrew"
   (
     eval setsid -w brew upgrade \</dev/null "$silently"
     eval setsid -w brew cask upgrade \</dev/null "$silently"
   )
-  progress finish "$?"
+  [ "$silently" ] && progress finish "$?"
 
-  progress start "Scrubbing homebrew's cache"
+  [ "$silently" ] && progress start "Scrubbing homebrew's cache"
   (
     eval brew cleanup -s --prune=31 "$silently"
-    eval brew cask cleanup "$silently"
   )
-  progress finish "$?"
+  [ "$silently" ] && progress finish "$?"
 
-  progress print "Updating NPM global packages"
+  [ "$silently" ] && progress start "Updating NPM global packages"
   eval npm update -g "$silently"
-  progress finish "$?"
+  [ "$silently" ] && progress finish "$?"
 
-  progress start "Updating gems"
+  [ "$silently" ] && progress start "Updating gems"
   # /usr/bin/gem often conflicts. MacOS version is root - wheel, no write perm.
   eval /usr/local/bin/gem update "$silently"
-  progress finish "$?"
+  [ "$silently" ] && progress finish "$?"
 }
 
 case "$1" in
