@@ -8,7 +8,7 @@ do-help() {
   "
 }
 
-if [ "$#" -lt 2 -o "$1" == "-h" -o "$1" == "--help" ]; then
+if [ "$#" -lt 2 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
   do-help
   exit 1
 fi
@@ -18,7 +18,7 @@ file=$2
 
 if [ ! -f "$file" ]; then
   do-help
-  bailout "File $file not found on $PWD or invalid.\n"
+  bailout "File $file not found on $PWD or invalid.\\n"
 fi
 
 #select the command basename, up to the first space
@@ -28,13 +28,13 @@ else
   baseCommand=$command
 fi
 
-if ! which $baseCommand 1>/dev/null 2>&1; then
+if ! command -v "$baseCommand" 1>/dev/null 2>&1; then
   do-help
-  bailout "Command '$baseCommand' not found.\n"
+  bailout "Command '$baseCommand' not found.\\n"
 fi
 
-while read line; do
-  eval $command $line
-done < $file
+while read -r line; do
+  eval "$command $line"
+done <"$file"
 
 exit $?

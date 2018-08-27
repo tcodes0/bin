@@ -2,7 +2,6 @@
 source "$HOME/bin/optar.sh" || bailout "Dependency failed"
 
 parse-options "$@"
-maybeDebug
 
 if [[ "$h" ]]; then
   precho "publish.sh:

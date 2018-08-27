@@ -1,13 +1,12 @@
 #! /usr/bin/env bash
 # shellcheck disable=SC2154
 ##-----------------------  Deps & Setup  ----------------------##
-for name in bkp-vars-and-routines optar progress paralol; do
+for name in bkp-routines optar progress paralol; do
   # shellcheck disable=SC1090
   source "$HOME/bin/$name.sh" || bailout "Dependency $name failed"
 done
 
 parse-options "$@"
-maybeDebug
 
 ######----------------- Quick exits  -----------------######
 if [[ "$#" != 0 ]]; then
@@ -21,9 +20,9 @@ if [[ "$#" != 0 ]]; then
 fi
 
 #-- Test for backup drive plugged in
-[ -d "$BKPDIR" ] || bailout "Backup destination not plugged in?"
+[ ! -d "$BKPDIR" ] && bailout "Backup destination not plugged in?"
 
-[[ "$(uname -s)" =~ Darwin ]] || bailout "Careful using this on Win/linux."
+[[ ! "$(uname -s)" =~ Darwin ]] && bailout "Careful using this on Win/linux."
 
 ######----------------- Main  -----------------######
 start-run

@@ -15,7 +15,7 @@ command="$HOME/bin/bkp.sh"
 
 #======================================== FUNCTIONS
 
-scheduler-lock () {
+scheduler-lock() {
   if [ "$1" == "-v" ]; then
     verbose="true"
     shift
@@ -29,7 +29,7 @@ scheduler-lock () {
   fi
 }
 
-scheduler-reset () {
+scheduler-reset() {
   if [ "$1" == "-v" ]; then
     verbose="true"
     shift
@@ -43,7 +43,7 @@ scheduler-reset () {
   fi
 }
 
-scheduler-unlock () {
+scheduler-unlock() {
   if [ "$1" == "-v" ]; then
     verbose="true"
     shift
@@ -57,13 +57,14 @@ scheduler-unlock () {
   fi
 }
 
-run-command-with-lock () {
-  precho "Run $(basename $command) now? (y/n)"
+run-command-with-lock() {
+  precho "Run $(basename "$command") now? (y/n)"
   precho "...defaulting to no in 6s"
-  read -t 6
-  if [ "$?" != 0 ]; then
-    exit 1
+
+  if ! read -rt 6; then
+    exit "$?"
   fi
+
   if [ "$REPLY" == "y" ] || [ "$REPLY" == "yes" ] || [ "$REPLY" == "Y" ] || [ "$REPLY" == "YES" ]; then
     scheduler-lock
     $command
@@ -81,16 +82,16 @@ scheduler-check() {
   if [ -f "$record_file" ]; then
     local recorded_weekday
 
-    while read rd; do
+    while read -r rd; do
       recorded_weekday=$rd
-    done < "$record_file"
+    done <"$record_file"
 
     if [ "$recorded_weekday" == "$todays_weekday" ]; then
       precho "already run today"
       exit 14
 
     elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
-    [ "$recorded_weekday" == '6' -a "$todays_weekday" == '0' ]; then
+      [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '0' ]; then
       precho "run yesterday"
       exit 12
 
@@ -104,44 +105,44 @@ scheduler-check() {
 #======================================== MAIN
 
 case $1 in
-  --record)
-    echo $todays_weekday > $record_file || bailout
-    exit 0
+--record)
+  echo "$todays_weekday" >$record_file || bailout
+  exit 0
   ;;
-  --lock)
-    scheduler-lock -v
-    exit 0
+--lock)
+  scheduler-lock -v
+  exit 0
   ;;
-  --unlock)
-    scheduler-unlock -v
-    exit 0
+--unlock)
+  scheduler-unlock -v
+  exit 0
   ;;
-  --check)
-    scheduler-check
+--check)
+  scheduler-check
   ;;
-  --reset)
-    if [ -f "$record_file" ]; then
-      scheduler-reset -v
-    else
-      precho "no record file to remove"
-      exit 1
-    fi
+--reset)
+  if [ -f "$record_file" ]; then
+    scheduler-reset -v
+  else
+    precho "no record file to remove"
+    exit 1
+  fi
   ;;
-  *)
-    precho "scheduler: run a command every other day
+*)
+  precho "scheduler: run a command every other day
 
-  --record \t save todays weekday in a record file
-  --check  \t check the weekday and execute the command if appropriate
-  --reset  \t delete record file
-  --lock   \t create lock file to prevent multiple instances
-  --unlock \t remove lock file
+  --record \\t save todays weekday in a record file
+  --check  \\t check the weekday and execute the command if appropriate
+  --reset  \\t delete record file
+  --lock   \\t create lock file to prevent multiple instances
+  --unlock \\t remove lock file
 
   current command: $command
 
   exit statuses:
-  11 \t already running ($lock_file is present)
-  12 \t run yesterday
-    14 \t already run today"
-    exit 0
+  11 \\t already running ($lock_file is present)
+  12 \\t run yesterday
+    14 \\t already run today"
+  exit 0
   ;;
 esac

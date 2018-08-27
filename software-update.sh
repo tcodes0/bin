@@ -7,16 +7,12 @@ work() {
   set -e
 
   [ "$silently" ] && progress start "Upgrading homebrew"
-  (
-    eval setsid -w brew upgrade \</dev/null "$silently"
-    eval setsid -w brew cask upgrade \</dev/null "$silently"
-  )
+  eval brew upgrade </dev/null "$silently" || true
+  eval brew cask upgrade </dev/null "$silently"
   [ "$silently" ] && progress finish "$?"
 
   [ "$silently" ] && progress start "Scrubbing homebrew's cache"
-  (
-    eval brew cleanup -s --prune=31 "$silently"
-  )
+  eval brew cleanup -s --prune=31 "$silently"
   [ "$silently" ] && progress finish "$?"
 
   [ "$silently" ] && progress start "Updating NPM global packages"
