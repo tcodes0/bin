@@ -7,8 +7,9 @@ work() {
   set -e
 
   [ "$silently" ] && progress start "Upgrading homebrew"
-  eval brew upgrade </dev/null "$silently" || true
-  eval brew cask upgrade </dev/null "$silently"
+  # || true because brew fails on pinned itens being upgraded...
+  eval setsid -w brew upgrade </dev/null "$silently" || true
+  eval setsid -w brew cask upgrade </dev/null "$silently"
   [ "$silently" ] && progress finish "$?"
 
   [ "$silently" ] && progress start "Scrubbing homebrew's cache"
@@ -27,7 +28,7 @@ work() {
 
 case "$1" in
 --dont-ask | -f)
-  work silently
+  work silently || progress finish "$?"
   exit 0
   ;;
 esac

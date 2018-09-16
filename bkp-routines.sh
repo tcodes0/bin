@@ -1,8 +1,6 @@
 #! /usr/bin/env bash
 ##-----------------------  Input  ----------------------##
 
-# TODO consider set -(opt to exit on any err)
-# declare LOGPATH="$HOME/Desktop/bkp-log.txt"
 declare LOGPATH="$HOME/Desktop/log.txt"
 declare ADDDELETE=(--delete --checksum)
 declare RSYNC="rsync --recursive --update --inplace --no-relative --exclude=node_modules/ --exclude=.vscode/extensions/"
@@ -171,7 +169,7 @@ vscodeExtensionList() {
 
   echo "-> $(date +"%b %d %T ")vscode extension list started" >>"$LOGPATH"
   progress start "Saving a list of vscode extensions"
-  code --list-extensions >"$file" || bailout
+  code --list-extensions >"$file" 2>/dev/null || bailout
   echo >>"$file" || bailout
   progress finish "$?"
   echo -e "_________________________________________________________\\n" >>"$LOGPATH"
