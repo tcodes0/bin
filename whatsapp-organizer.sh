@@ -37,7 +37,8 @@ moveFiles() {
           if [[ $where =~ Video ]]; then
             fileType=zap-vids
           else
-            fileType=zap
+            [ ! -n "$manual" ] && fileType=zap
+            [ -n "$manual" ] && fileType="$manualFileType"
           fi
           if [[ $where =~ Sent ]]; then
             destination="$(dirname $dir)/$year/$month/$fileType/sent"
@@ -122,9 +123,15 @@ renameFolders (){
 args (){
   #1 takes args given to script
   if [[ "$#" == 0 ]] || [ "$1" == "-h" ] || [ "$1" == "--help" ] ; then
-    precho "process images with --imgs and videos with --vids"
-    precho "automatically finds WhatsApp Images or WhatsApp Video folder"
-    precho "pass --dry-run as second arg to print commands only"
+    precho "automatically organizes content from WhatsApp Images or WhatsApp Video folder"
+    precho "it produces a folder structure like: 2019/05/pics/*stuff*"
+    precho "--imgs do WhatsApp images (don't use both)"
+    precho "--vids do WhatsApp videos (don't use both)"
+    precho "--dry-run to print commands only"
+    precho "the underlying pattern based system can be used to match other files and folders:"
+    precho "--manual <path to dir with content> <filename pattern> <folder name>"
+    precho "where filename pattern is PAT in: \$PAT\$YEAR\$MONTH"
+    precho "and folder name is final folder with content. E.g. folderName=foobar: 2018/04/foobar/*pics*"
     exit
   elif [[ "$1" == "--vids" ]]; then
     pat=VID-
@@ -133,15 +140,20 @@ args (){
     pat=IMG-
     shift
   fi
-  if [[ "$1" == "--dry-run" ]]; then
+  if [[ "$1" == "--manual" ]]; then
+    manual=true
+    dir="$2"
+    pat="$3"
+    manualFileType="$4"
+  fi
+  if [[ "$*" =~ --dry-run ]]; then
     dry="echo"
   fi
 }
 # - - -- - - - - - - - - - - - - - - - - - - - - - - -  Code
 args $@
-find_whatsappDir
+[ ! -n "$manual" ] && find_whatsappDir
 renameFolders
-exit
 moveFiles $dir $(findYearsWithFiles $dir)
 if [[ -d "$dir/Sent" ]]; then
   dir=$dir/Sent
