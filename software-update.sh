@@ -18,6 +18,7 @@ work() {
 
   [ "$silently" ] && progress start "Updating NPM global packages"
   eval npm update -g "$silently"
+  eval npm -g i caniuse "$silently"
   [ "$silently" ] && progress finish "$?"
 
   [ "$silently" ] && progress start "Updating gems"

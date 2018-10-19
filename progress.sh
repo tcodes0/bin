@@ -119,6 +119,19 @@ function progress() {
     progress_pad_left=$(((progress_line_length - ${#progress_message} - ${#progress_runner}) / 2))
     _print
     ;;
+  "error")
+    local last="$?"
+    if [ "$last" == 0 ]; then
+      last=1
+    fi
+    shift
+    progress finish "$last"
+    ;;
+  "die")
+    progress error
+    [[ ! "$-" =~ i ]] && exit 1
+    return 1
+    ;;
   *)
     echo "Please give a valid command"
     echo "start, finish, total or print"

@@ -91,6 +91,7 @@ scheduler-check() {
       exit 14
 
     elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
+      [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
       [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '0' ]; then
       precho "run yesterday"
       exit 12
