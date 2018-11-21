@@ -17,6 +17,8 @@ declare -A PATHS=(
   ["/Volumes/Izi/Ableton/User Library/"]="$BKPDIR/Bkp/Ableton/User Library/"
   ["/Users/vamac/Pictures/2018/"]="$BKPDIR/Bkp/Pictures/2018/"
   ["/Users/vamac/Pictures/walls/"]="$BKPDIR/Bkp/Pictures/walls/"
+  ["/Users/vamac/.ssh/"]="$BKPDIR/Bkp/_Mac/home/dot-ssh/"
+  ["/Users/vamac/.gnupg/"]="$BKPDIR/Bkp/_Mac/home/dot-gnupg/"
   # [""]=""
   # [""]=""
 )
