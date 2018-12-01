@@ -23,12 +23,12 @@ work() {
 
   [ "$silently" ] && progress start "Updating gems"
   # /usr/bin/gem often conflicts. MacOS version is root - wheel, no write perm.
-  eval setsid -w yes | /usr/local/bin/gem update "$silently" || true
+  eval "setsid -w yes | /usr/local/bin/gem update $silently" || true
   eval /usr/local/bin/gem cleanup "$silently"
   [ "$silently" ] && progress finish "$?"
 
   [ "$silently" ] && progress start "Updating Node"
-  eval yes | nvm install node "$silently"
+  eval "yes | nvm install node $silently"
   [ "$silently" ] && progress finish "$?"
 }
 
