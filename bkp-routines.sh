@@ -41,7 +41,7 @@ declare -A DELPATHS=(
 declare -A ZIPTHIS=(
   #do NOT end file paths with a trailing slash/. It will zip contents ONLY and create a file named .tar.7z (hidden)
   #old ff path: "/Users/Shared/5e3ouofl.default"
-  ["$HOME/Library/Application Support/Waterfox/Profiles/5e3ouofl.default"]="$BKPDIR/Bkp/Firefox/5e3ouofl.default.tar.7z"
+  ["$HOME/Library/Application Support/Firefox/Profiles/cthdp4sx.dev-edition-default"]="$BKPDIR/Bkp/Firefox/5e3ouofl.default.tar.7z"
   # ["/Volumes/Izi/bkp/vuzebkp"]="$BKPDIR/Bkp/_Mac/others/vuzebkp.tar.7z"
 )
 
