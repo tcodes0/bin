@@ -11,6 +11,7 @@
 todays_weekday=$(date +"%w")
 record_file=~/.scheduler-last-run-date
 lock_file=~/.scheduler-lock
+dont_annoy_file=~/.scheduler-dont-annoy
 command="$HOME/bin/bkp.sh"
 
 #======================================== FUNCTIONS
@@ -78,6 +79,19 @@ scheduler-check() {
     exit 11
   fi
 
+  if [ -f "$dont_annoy_file" ]; then
+    local last_time
+    while read -r rd; do
+      last_time=$rd
+    done <"$dont_annoy_file"
+    # set -x
+    if [ "$last_time" == "$todays_weekday" ]; then
+      precho "already asked to run today"
+      exit 17
+    fi
+  fi
+  echo "$todays_weekday" >"$dont_annoy_file"
+
   #check if a previous run left a file telling the run's day.
   if [ -f "$record_file" ]; then
     local recorded_weekday
@@ -89,13 +103,21 @@ scheduler-check() {
     if [ "$recorded_weekday" == "$todays_weekday" ]; then
       precho "already run today"
       exit 14
-
     elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
-      [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
-      [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '0' ]; then
+      { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '0' ]; }; then
       precho "run yesterday"
       exit 12
-
+    # elif [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
+    #   { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '0' ]; } ||
+    #   { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '1' ]; }; then
+    #   precho "run 2 day ago"
+    #   exit 15
+    # elif [ "$((recorded_weekday + 3))" == "$todays_weekday" ] ||
+    #   { [ "$recorded_weekday" == '4' ] && [ "$todays_weekday" == '0' ]; } ||
+    #   { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '1' ]; } ||
+    #   { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '2' ]; }; then
+    #   precho "run 3 day ago"
+    #   exit 16
     else
       run-command-with-lock
     fi
@@ -130,7 +152,7 @@ case $1 in
   fi
   ;;
 *)
-  precho "scheduler: run a command every other day
+  precho "scheduler: run a command every 3 days
 
   --record \\t save todays weekday in a record file
   --check  \\t check the weekday and execute the command if appropriate
@@ -143,7 +165,10 @@ case $1 in
   exit statuses:
   11 \\t already running ($lock_file is present)
   12 \\t run yesterday
-    14 \\t already run today"
+  14 \\t already run today
+  15 \\t run 2 day ago
+  16 \\t run 3 day ago
+  17 \\t already asked to run today ($dont_annoy_file is present)"
   exit 0
   ;;
 esac
