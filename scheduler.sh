@@ -107,11 +107,11 @@ scheduler-check() {
       { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '0' ]; }; then
       precho "run yesterday"
       exit 12
-    # elif [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
-    #   { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '0' ]; } ||
-    #   { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '1' ]; }; then
-    #   precho "run 2 day ago"
-    #   exit 15
+    elif [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
+      { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '0' ]; } ||
+      { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '1' ]; }; then
+      precho "run 2 day ago"
+      exit 15
     # elif [ "$((recorded_weekday + 3))" == "$todays_weekday" ] ||
     #   { [ "$recorded_weekday" == '4' ] && [ "$todays_weekday" == '0' ]; } ||
     #   { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '1' ]; } ||
