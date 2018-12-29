@@ -24,7 +24,7 @@ scheduler-lock() {
   if ! [ -f "$lock_file" ]; then
     touch "$lock_file" || bailout
     if [ "$verbose" == "true" ]; then
-      precho "lock file created"
+      echo "lock file created"
     fi
     return
   fi
@@ -38,7 +38,7 @@ scheduler-reset() {
   if [ -f "$record_file" ]; then
     trash "$record_file" || bailout
     if [ "$verbose" == "true" ]; then
-      precho "record file removed"
+      echo "record file removed"
     fi
     return
   fi
@@ -52,15 +52,15 @@ scheduler-unlock() {
   if [ -f "$lock_file" ]; then
     trash "$lock_file" || bailout
     if [ "$verbose" == "true" ]; then
-      precho "lock file removed"
+      echo "lock file removed"
     fi
     return
   fi
 }
 
 run-command-with-lock() {
-  precho "Run $(basename "$command") now? (y/n)"
-  precho "...defaulting to no in 6s"
+  echo "Run $(basename "$command") now? (y/n)"
+  echo "...defaulting to no in 6s"
 
   if ! read -rt 6; then
     exit "$?"
@@ -75,7 +75,7 @@ run-command-with-lock() {
 
 scheduler-check() {
   if [ -f "$lock_file" ]; then
-    precho "locked: already running"
+    echo "locked: already running"
     exit 11
   fi
 
@@ -86,7 +86,7 @@ scheduler-check() {
     done <"$dont_annoy_file"
     # set -x
     if [ "$last_time" == "$todays_weekday" ]; then
-      precho "already asked to run today"
+      echo "already asked to run today"
       exit 17
     fi
   fi
@@ -101,22 +101,22 @@ scheduler-check() {
     done <"$record_file"
 
     if [ "$recorded_weekday" == "$todays_weekday" ]; then
-      precho "already run today"
+      echo "already run today"
       exit 14
     elif [ "$((recorded_weekday + 1))" == "$todays_weekday" ] ||
       { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '0' ]; }; then
-      precho "run yesterday"
+      echo "run yesterday"
       exit 12
     elif [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
       { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '0' ]; } ||
       { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '1' ]; }; then
-      precho "run 2 day ago"
+      echo "run 2 day ago"
       exit 15
     # elif [ "$((recorded_weekday + 3))" == "$todays_weekday" ] ||
     #   { [ "$recorded_weekday" == '4' ] && [ "$todays_weekday" == '0' ]; } ||
     #   { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '1' ]; } ||
     #   { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '2' ]; }; then
-    #   precho "run 3 day ago"
+    #   echo "run 3 day ago"
     #   exit 16
     else
       run-command-with-lock
@@ -147,12 +147,12 @@ case $1 in
   if [ -f "$record_file" ]; then
     scheduler-reset -v
   else
-    precho "no record file to remove"
+    echo "no record file to remove"
     exit 1
   fi
   ;;
 *)
-  precho "scheduler: run a command every 3 days
+  echo "scheduler: run a command every 3 days
 
   --record \\t save todays weekday in a record file
   --check  \\t check the weekday and execute the command if appropriate
