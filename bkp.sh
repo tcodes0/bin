@@ -2,21 +2,18 @@
 # shellcheck disable=SC2154
 ##-----------------------  Deps & Setup  ----------------------##
 for name in bkp-routines optar progress paralol; do
-  # shellcheck disable=SC1090
-  source "$HOME/bin/$name.sh" || bailout "Dependency $name failed"
+    # shellcheck disable=SC1090
+    source "$HOME/bin/$name.sh" || bailout "Dependency $name failed"
 done
 
 parse-options "$@"
 
 ######----------------- Quick exits  -----------------######
 if [[ "$#" != 0 ]]; then
-  if [ "$print" ] || [ "$p" ]; then
-    do-print
-    exit 0
-  elif [ "$help" ] || [ "$h" ]; then
-    do-help
-    exit 1
-  fi
+    if [ "$help" ] || [ "$h" ]; then
+        do-help
+        exit 1
+    fi
 fi
 
 #-- Test for backup drive plugged in
@@ -26,13 +23,13 @@ fi
 
 ######----------------- Main  -----------------######
 start-run
-pathlist
-safelist
-dellist
-applist
-vscodeExtensionList
-# ziplist #bugged: creating empty file
-do-software
-do-brewfile
-do-mackup
+copyRegular
+copyRedundant
+syncDeleting
+listApps
+listVscodeExtensions
+copyZipping
+updateSoftware
+updateBrewfile
+runMackup
 finish-run

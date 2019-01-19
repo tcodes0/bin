@@ -1,6 +1,8 @@
 #! /usr/bin/env bash
 # shellcheck source=/Users/vamac/bin/progress.sh
+set -e
 if [ -f "${HOME}/bin/progress.sh" ]; then source "$HOME/bin/progress.sh"; fi
+
 
 work() {
   [ "$1" == "silently" ] && local silently=">/dev/null 2>&1"
