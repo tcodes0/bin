@@ -137,7 +137,6 @@ listVscodeExtensions() {
 }
 
 copyZipping() {
-  set -x
   # progress start "Zipping and copying files"
   echo "-> $(date +"%b %d %T ")copyZipping - tar7zing files..." >>"$LOGPATH"
   for file in "${!ZIPPING[@]}"; do
@@ -152,7 +151,6 @@ copyZipping() {
     trash "${file}.tar.7z" || bailout
   done
   # progress finish "$?"
-  set -x
   echo -e "_________________________________________________________\\n" >>"$LOGPATH"
 }
 
