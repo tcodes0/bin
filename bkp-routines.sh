@@ -137,7 +137,7 @@ listVscodeExtensions() {
 }
 
 copyZipping() {
-  # progress start "Zipping and copying files"
+  progress start "Zipping and copying files"
   echo "-> $(date +"%b %d %T ")copyZipping - tar7zing files..." >>"$LOGPATH"
   for file in "${!ZIPPING[@]}"; do
     tar7z "$file"
@@ -150,7 +150,7 @@ copyZipping() {
     $RSYNC --log-file "$LOGPATH" "${file}.tar.7z" "$bkp"
     trash "${file}.tar.7z" || bailout
   done
-  # progress finish "$?"
+  progress finish "$?"
   echo -e "_________________________________________________________\\n" >>"$LOGPATH"
 }
 
