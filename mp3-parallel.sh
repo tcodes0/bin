@@ -4,7 +4,7 @@ if [ $# != 1 ]; then
   precho "mp3-parallel.sh [format]"
   precho "format is: mp3, flac, m4a, alac, ..."
   precho "...defaulting to '.aif' in 3s..."
-  read -t 3
+  read -rt 3
   if [ "$REPLY" == "n" ]; then
     exit 1
   else
@@ -13,5 +13,5 @@ if [ $# != 1 ]; then
 else
   format="$1"
 fi
-parallel -i -j$(sysctl -n hw.ncpu) ffmpeg -i {} -qscale:a 0 {}.mp3 -- ./*."$format"
+parallel -i -j"$(sysctl -n hw.ncpu)" ffmpeg -i {} -qscale:a 0 {}.mp3 -- ./*."$format"
 rename -s ."$format".mp3 .mp3 ./*.mp3
