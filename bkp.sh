@@ -17,18 +17,18 @@ if [[ "$#" != 0 ]]; then
 fi
 
 #-- Test for backup drive plugged in
-[ ! -d "$BKPDIR" ] && bailout "Backup destination not plugged in?"
+# [ ! -d "$BKPDIR" ] && bailout "Backup destination not plugged in?"
 
 [[ ! "$(uname -s)" =~ Darwin ]] && bailout "Careful using this on Win/linux."
 
 ######----------------- Main  -----------------######
 start-run
-copyRegular
-copyRedundant
-syncDeleting
+# copyRegular
+# copyRedundant
+# syncDeleting
 listApps
 listVscodeExtensions
-copyZipping
+# copyZipping
 updateSoftware
 updateBrewfile
 runMackup
