@@ -6,7 +6,7 @@ set -e
 ANDROID_SDK_PATH=$HOME/Library/Android/sdk
 BUILD_TOOLS_VERSION=28.0.0
 OUTPUT_PATH=$HOME/Desktop/app-release.apk
-PATH_TO_UNSIGNED_APK=android/app/build/outputs/apk/release/app-release-unsigned.apk
+PATH_TO_UNSIGNED_APK=$PWD/app/build/outputs/apk/release/app-release-unsigned.apk
 
 if [ "$#" == 0 ]; then
   echo 'android-build-sign sense|scatter [install]'
@@ -40,12 +40,12 @@ cd android
 ./gradlew assembleRelease
 
 # on my machine jarsigner is at /System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/jarsigner
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "$PATH_TO_KEYSTORE" $PATH_TO_UNSIGNED_APK $KEY_ALIAS -storepass $KEY_PASSWORD
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "$PATH_TO_KEYSTORE" "$PATH_TO_UNSIGNED_APK" $KEY_ALIAS -storepass "$KEY_PASSWORD"
 
 # on my machine android sdk is at $HOME/Library/Android/sdk
 # on my machine I have many build tools versions, I used 28.0.0
 # you can choose the path of the signed apk, for example app/build/outputs/apk/release/app-release.apk
-"$ANDROID_SDK_PATH"/build-tools/$BUILD_TOOLS_VERSION/zipalign -v 4 $PATH_TO_UNSIGNED_APK "$OUTPUT_PATH"
+"$ANDROID_SDK_PATH"/build-tools/$BUILD_TOOLS_VERSION/zipalign -v 4 "$PATH_TO_UNSIGNED_APK" "$OUTPUT_PATH"
 
 "$ANDROID_SDK_PATH"/build-tools/$BUILD_TOOLS_VERSION/apksigner verify "$OUTPUT_PATH"
 
