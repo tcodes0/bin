@@ -11,7 +11,9 @@ work() {
   [ "$silently" ] && progress start "Upgrading homebrew"
   # || true because brew fails on pinned itens being upgraded...
   eval setsid -w brew upgrade </dev/null "$silently" || true
+  set +e # clover configurator issues
   eval setsid -w brew cask upgrade </dev/null "$silently"
+  set -e
   [ "$silently" ] && progress finish "$?"
 
   [ "$silently" ] && progress start "Scrubbing homebrew's cache"
@@ -25,8 +27,8 @@ work() {
 
   [ "$silently" ] && progress start "Updating gems"
   # /usr/bin/gem often conflicts. MacOS version is root - wheel, no write perm.
-  eval "setsid -w yes | /usr/local/bin/gem update $silently" || true
-  eval /usr/local/bin/gem cleanup "$silently"
+  eval "setsid -w yes | /usr/local/opt/ruby/bin/gem update $silently" || true
+  eval /usr/local/opt/ruby/bin/gem cleanup "$silently"
   [ "$silently" ] && progress finish "$?"
 
   [ "$silently" ] && progress start "Updating Node"

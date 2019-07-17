@@ -6,15 +6,16 @@ set -e
 ANDROID_SDK_PATH=$HOME/Library/Android/sdk
 BUILD_TOOLS_VERSION=28.0.0
 OUTPUT_PATH=$HOME/Desktop/app-release.apk
-PATH_TO_UNSIGNED_APK=$PWD/app/build/outputs/apk/release/app-release-unsigned.apk
+PATH_TO_UNSIGNED_APK=$PWD/android/app/build/outputs/apk/release/app-release-unsigned.apk
 
 if [ "$#" == 0 ]; then
-  echo 'android-build-sign sense|scatter [install]'
+  echo 'android-build-sign sense|scatter [install] [-f]'
+  echo '-f rebuilds apk even if present'
   exit
 fi
 
 if [ ! -f package.json ]; then
-  echo 'This doesnt look like a react native project root';
+  echo 'This doesnt look like a react native project root'
   exit 1
 fi
 
@@ -29,15 +30,17 @@ if [ "$1" == "scatter" ]; then
   KEY_ALIAS=release-key
 fi
 
+if [ "$2" == "-f" ] || [ ! -f "$PATH_TO_UNSIGNED_APK" ]; then
+  # make apk
+  # apk path will likely be: android/app/build/outputs/apk/release/app-release-unsigned.apk
+  cd android
+  ./gradlew assembleRelease
+fi
+
 if [ -f "$OUTPUT_PATH" ]; then
   mv "$OUTPUT_PATH" "$OUTPUT_PATH"-old
   trash "$OUTPUT_PATH"-old
 fi
-
-# make apk
-# apk path will likely be: android/app/build/outputs/apk/release/app-release-unsigned.apk
-cd android
-./gradlew assembleRelease
 
 # on my machine jarsigner is at /System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/jarsigner
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "$PATH_TO_KEYSTORE" "$PATH_TO_UNSIGNED_APK" $KEY_ALIAS -storepass "$KEY_PASSWORD"
@@ -49,6 +52,8 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "$PATH_TO_KEYST
 
 "$ANDROID_SDK_PATH"/build-tools/$BUILD_TOOLS_VERSION/apksigner verify "$OUTPUT_PATH"
 
-if [ "$2" == 'install' ]; then
-  adb install "$OUTPUT_PATH"
-fi
+# if [ "$2" == 'install' ]; then
+#   adb install "$OUTPUT_PATH"
+#   echo installed
+# fi
+echo apk at "$OUTPUT_PATH"
