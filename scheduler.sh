@@ -107,11 +107,11 @@ scheduler-check() {
       { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '0' ]; }; then
       echo "run yesterday"
       exit 12
-    elif [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
-      { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '0' ]; } ||
-      { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '1' ]; }; then
-      echo "run 2 day ago"
-      exit 15
+    # elif [ "$((recorded_weekday + 2))" == "$todays_weekday" ] ||
+    #   { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '0' ]; } ||
+    #   { [ "$recorded_weekday" == '6' ] && [ "$todays_weekday" == '1' ]; }; then
+    #   echo "run 2 day ago"
+    #   exit 15
     # elif [ "$((recorded_weekday + 3))" == "$todays_weekday" ] ||
     #   { [ "$recorded_weekday" == '4' ] && [ "$todays_weekday" == '0' ]; } ||
     #   { [ "$recorded_weekday" == '5' ] && [ "$todays_weekday" == '1' ]; } ||
@@ -152,7 +152,7 @@ case $1 in
   fi
   ;;
 *)
-  echo "scheduler: run a command every 3 days
+  echo -e "scheduler: run a command every 2 days
 
   --record \\t save todays weekday in a record file
   --check  \\t check the weekday and execute the command if appropriate
